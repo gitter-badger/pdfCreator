@@ -10,7 +10,7 @@ gulp.task('scripts:src', () => {
 		}))
 		.on('error', error => console.log(error.toString()))
 		.pipe(gulp.dest(file => {
-			return `./dist/${file.base}`;
+			return file.base.replace('src', 'dist');
 		}));
 });
 
@@ -28,7 +28,7 @@ gulp.task('scripts:examples', () => {
 });
 
 gulp.task('watch', () => {
-	gulp.watch(['./src/*.js', './examples/**/*.js'], ['scripts:src', 'scripts:examples']);
+	gulp.watch(['./src/*.js', './src/**/*.js', './examples/**/*.js'], ['scripts:src', 'scripts:examples']);
 });
 
 gulp.task('default', ['scripts:src', 'scripts:examples', 'watch']);

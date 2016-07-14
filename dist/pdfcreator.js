@@ -1,3 +1,5 @@
+'use strict';
+
 // Layouts
 require('./layouts/cover');
 require('./layouts/imgWithList');

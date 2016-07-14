@@ -27,7 +27,7 @@
 		insertHeader (text, alignment) {
 			this.doc.setFontSize(12);
 			this.doc.text(text, alignment === 'center' ? this.padding / 2 : this.padding, this.padding, alignment);
-			this.doc.line(this.padding, this.padding + 7, this.padding - this.padding, this.padding + 7);
+			this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
 		}
 
 		insertFooter (text, alignment, linkText, linkUrl) {
