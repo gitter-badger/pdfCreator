@@ -37,16 +37,24 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			}
 		}, {
 			key: 'insertHeader',
-			value: function insertHeader(text, alignment) {
+			value: function insertHeader(_ref) {
+				var text = _ref.text;
+				var align = _ref.align;
+
 				this.doc.setFontSize(12);
-				this.doc.text(text, alignment === 'center' ? this.padding / 2 : this.padding, this.padding, alignment);
+				this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
 				this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
 			}
 		}, {
 			key: 'insertFooter',
-			value: function insertFooter(text, alignment, linkText, linkUrl) {
+			value: function insertFooter(_ref2) {
+				var text = _ref2.text;
+				var align = _ref2.align;
+				var linkText = _ref2.linkText;
+				var linkUrl = _ref2.linkUrl;
+
 				this.doc.setFontSize(10);
-				this.doc.text(text, alignment === 'center' ? this.width / 2 : this.padding, this.height - this.padding, alignment);
+				this.doc.text(text, align === 'center' ? this.width / 2 : this.padding, this.height - this.padding, align);
 				this.doc.line(this.padding, this.height - this.padding - 12, this.width - this.padding, this.height - this.padding - 12);
 
 				if (linkText && linkUrl) {
@@ -78,12 +86,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			}
 		}, {
 			key: 'insertImage',
-			value: function insertImage(imageUrl, imageFormat, posX, posY, width, height) {
+			value: function insertImage(_ref3) {
 				var _this = this;
+
+				var imgUrl = _ref3.imgUrl;
+				var imgExt = _ref3.imgExt;
+				var posX = _ref3.posX;
+				var posY = _ref3.posY;
+				var width = _ref3.width;
+				var height = _ref3.height;
 
 				var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
-				this.toDataUrl(imageUrl, function (base64Img, imgWidth, imgHeight) {
+				this.toDataUrl(imgUrl, function (base64Img, imgWidth, imgHeight) {
 					var ratio = imgHeight / imgWidth;
 
 					imgWidth = width || imgWidth;
@@ -94,23 +109,30 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					}
 
 					_this.doc.setPage(crtPageNumber);
-					_this.doc.addImage(base64Img, imageFormat, posX, posY, imgWidth, imgHeight);
+					_this.doc.addImage(base64Img, imgExt, posX, posY, imgWidth, imgHeight);
 				});
 			}
 		}, {
 			key: 'insertText',
-			value: function insertText(text, fontSize, posX, posY, alignment, colR, colG, colB) {
-				colR = colR || 0;
-				colG = colG || 0;
-				colB = colB || 0;
+			value: function insertText(_ref4) {
+				var text = _ref4.text;
+				var fontSize = _ref4.fontSize;
+				var posX = _ref4.posX;
+				var posY = _ref4.posY;
+				var align = _ref4.align;
+				var _ref4$color = _ref4.color;
+				var color = _ref4$color === undefined ? [0, 0, 0] : _ref4$color;
 
 				this.doc.setFontSize(fontSize);
-				this.doc.setTextColor(colR, colG, colB);
-				this.doc.text(text, posX, posY, alignment || '');
+				this.doc.setTextColor(color[0], color[1], color[2]);
+				this.doc.text(text, posX, posY, align || '');
 			}
 		}, {
 			key: 'addPage',
-			value: function addPage(width, height) {
+			value: function addPage(_ref5) {
+				var width = _ref5.width;
+				var height = _ref5.height;
+
 				this.doc.addPage(width, height);
 			}
 		}, {

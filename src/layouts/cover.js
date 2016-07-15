@@ -6,16 +6,50 @@
 (function () {
 	'use strict';
 
-	var PDF = require('../class');
+	const PDF = require('../class');
 
 	PDF.addLayout('cover', function (data) {
 		const {doc, width, height, padding} = this,
-			{topImg, title, subTitle, subSubTitle, lowerImg} =  data;
+			{topImgUrl, topImgExt = 'PNG', title, subTitle, subSubTitle, bottomImgUrl, bottomImgExt = 'PNG'} =  data;
 
-		topImg && this.insertImage(topImg, 'PNG', 'center', height / 4, width / 3);
-		title && this.insertText(title, 25, width / 2, height / 3 + 125, 'center');
-		subTitle && this.insertText(subTitle, 14, width / 2, height / 3 + 160, 'center');
-		subSubTitle && this.insertText(subSubTitle, 11, width / 2, height / 3 + 180, 'center');
-		lowerImg && this.insertImage(lowerImg, 'PNG', padding + 50, 3 * height / 4, 90);
+		this.insertImage({
+			imgUrl: topImgUrl,
+			imgExt: topImgExt, 
+			posX: 'center',
+			posY: height / 4,
+			width: width / 3
+		});
+
+		this.insertText({
+			text: title,
+			fontSize: 25,
+			posX: width / 2,
+			posY: height / 3 + 125,
+			align: 'center'
+		});
+
+		this.insertText({
+			text: subTitle,
+			fontSize: 14,
+			posX: width / 2,
+			posY: height / 3 + 160,
+			align: 'center'
+		});
+
+		this.insertText({
+			text: subSubTitle,
+			fontSize: 11,
+			posX: width / 2,
+			posY: height / 3 + 180,
+			align: 'center'
+		});
+
+		this.insertImage({
+			imgUrl: bottomImgUrl,
+			imgExt: bottomImgExt,
+			posX: padding + 50,
+			posY: 3 * height / 4,
+			width:90
+		});
 	});
 })();

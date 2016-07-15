@@ -8,7 +8,10 @@ gulp.task('scripts:src', () => {
 		.pipe(babel({
 			presets: ['es2015']
 		}))
-		.on('error', error => console.log(error.toString()))
+		.on('error', function(e) {
+	     	console.log('>>> ERROR', e);
+	    	this.emit('end');
+	    })
 		.pipe(gulp.dest(file => {
 			return file.base.replace('src', 'dist');
 		}));
@@ -21,7 +24,10 @@ gulp.task('scripts:examples', () => {
 		.pipe(babel({
 			presets: ['es2015']
 		}))
-		.on('error', error => console.log(error.toString()))
+		.on('error', function(e) {
+	     	console.log('>>> ERROR', e);
+	    	this.emit('end');
+	    })
 		.pipe(gulp.dest(file => {
 			return `${file.base}/scripts`;
 		}));

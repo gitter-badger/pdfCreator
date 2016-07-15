@@ -70,16 +70,24 @@
 					}
 				}, {
 					key: 'insertHeader',
-					value: function insertHeader(text, alignment) {
+					value: function insertHeader(_ref) {
+						var text = _ref.text;
+						var align = _ref.align;
+
 						this.doc.setFontSize(12);
-						this.doc.text(text, alignment === 'center' ? this.padding / 2 : this.padding, this.padding, alignment);
+						this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
 						this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
 					}
 				}, {
 					key: 'insertFooter',
-					value: function insertFooter(text, alignment, linkText, linkUrl) {
+					value: function insertFooter(_ref2) {
+						var text = _ref2.text;
+						var align = _ref2.align;
+						var linkText = _ref2.linkText;
+						var linkUrl = _ref2.linkUrl;
+
 						this.doc.setFontSize(10);
-						this.doc.text(text, alignment === 'center' ? this.width / 2 : this.padding, this.height - this.padding, alignment);
+						this.doc.text(text, align === 'center' ? this.width / 2 : this.padding, this.height - this.padding, align);
 						this.doc.line(this.padding, this.height - this.padding - 12, this.width - this.padding, this.height - this.padding - 12);
 
 						if (linkText && linkUrl) {
@@ -111,12 +119,19 @@
 					}
 				}, {
 					key: 'insertImage',
-					value: function insertImage(imageUrl, imageFormat, posX, posY, width, height) {
+					value: function insertImage(_ref3) {
 						var _this = this;
+
+						var imgUrl = _ref3.imgUrl;
+						var imgExt = _ref3.imgExt;
+						var posX = _ref3.posX;
+						var posY = _ref3.posY;
+						var width = _ref3.width;
+						var height = _ref3.height;
 
 						var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
-						this.toDataUrl(imageUrl, function (base64Img, imgWidth, imgHeight) {
+						this.toDataUrl(imgUrl, function (base64Img, imgWidth, imgHeight) {
 							var ratio = imgHeight / imgWidth;
 
 							imgWidth = width || imgWidth;
@@ -127,23 +142,30 @@
 							}
 
 							_this.doc.setPage(crtPageNumber);
-							_this.doc.addImage(base64Img, imageFormat, posX, posY, imgWidth, imgHeight);
+							_this.doc.addImage(base64Img, imgExt, posX, posY, imgWidth, imgHeight);
 						});
 					}
 				}, {
 					key: 'insertText',
-					value: function insertText(text, fontSize, posX, posY, alignment, colR, colG, colB) {
-						colR = colR || 0;
-						colG = colG || 0;
-						colB = colB || 0;
+					value: function insertText(_ref4) {
+						var text = _ref4.text;
+						var fontSize = _ref4.fontSize;
+						var posX = _ref4.posX;
+						var posY = _ref4.posY;
+						var align = _ref4.align;
+						var _ref4$color = _ref4.color;
+						var color = _ref4$color === undefined ? [0, 0, 0] : _ref4$color;
 
 						this.doc.setFontSize(fontSize);
-						this.doc.setTextColor(colR, colG, colB);
-						this.doc.text(text, posX, posY, alignment || '');
+						this.doc.setTextColor(color[0], color[1], color[2]);
+						this.doc.text(text, posX, posY, align || '');
 					}
 				}, {
 					key: 'addPage',
-					value: function addPage(width, height) {
+					value: function addPage(_ref5) {
+						var width = _ref5.width;
+						var height = _ref5.height;
+
 						this.doc.addPage(width, height);
 					}
 				}, {
@@ -198,17 +220,55 @@
 				var width = this.width;
 				var height = this.height;
 				var padding = this.padding;
-				var topImg = data.topImg;
+				var topImgUrl = data.topImgUrl;
+				var _data$topImgExt = data.topImgExt;
+				var topImgExt = _data$topImgExt === undefined ? 'PNG' : _data$topImgExt;
 				var title = data.title;
 				var subTitle = data.subTitle;
 				var subSubTitle = data.subSubTitle;
-				var lowerImg = data.lowerImg;
+				var bottomImgUrl = data.bottomImgUrl;
+				var _data$bottomImgExt = data.bottomImgExt;
+				var bottomImgExt = _data$bottomImgExt === undefined ? 'PNG' : _data$bottomImgExt;
 
-				topImg && this.insertImage(topImg, 'PNG', 'center', height / 4, width / 3);
-				title && this.insertText(title, 25, width / 2, height / 3 + 125, 'center');
-				subTitle && this.insertText(subTitle, 14, width / 2, height / 3 + 160, 'center');
-				subSubTitle && this.insertText(subSubTitle, 11, width / 2, height / 3 + 180, 'center');
-				lowerImg && this.insertImage(lowerImg, 'PNG', padding + 50, 3 * height / 4, 90);
+				this.insertImage({
+					imgUrl: topImgUrl,
+					imgExt: topImgExt,
+					posX: 'center',
+					posY: height / 4,
+					width: width / 3
+				});
+
+				this.insertText({
+					text: title,
+					fontSize: 25,
+					posX: width / 2,
+					posY: height / 3 + 125,
+					align: 'center'
+				});
+
+				this.insertText({
+					text: subTitle,
+					fontSize: 14,
+					posX: width / 2,
+					posY: height / 3 + 160,
+					align: 'center'
+				});
+
+				this.insertText({
+					text: subSubTitle,
+					fontSize: 11,
+					posX: width / 2,
+					posY: height / 3 + 180,
+					align: 'center'
+				});
+
+				this.insertImage({
+					imgUrl: bottomImgUrl,
+					imgExt: bottomImgExt,
+					posX: padding + 50,
+					posY: 3 * height / 4,
+					width: 90
+				});
 			});
 		})();
 	}, { "../class": 1 }], 3: [function (require, module, exports) {
@@ -229,9 +289,17 @@
 				var width = this.width;
 				var height = this.height;
 				var padding = this.padding;
-				var img = data.img;
+				var imgUrl = data.imgUrl;
+				var _data$imgExt = data.imgExt;
+				var imgExt = _data$imgExt === undefined ? 'PNG' : _data$imgExt;
 
-				this.insertImage(img, 'PNG', padding, height / 3, width - 2 * padding);
+				this.insertImage({
+					imgUrl: imgUrl,
+					imgExt: imgExt,
+					posX: padding,
+					posY: height / 3,
+					width: width - 2 * padding
+				});
 			});
 		})();
 	}, { "../class": 1 }], 4: [function (require, module, exports) {
@@ -254,21 +322,92 @@
 				var width = this.width;
 				var height = this.height;
 				var padding = this.padding;
-				var img = data.img;
-				var titleColor = data.titleColor;
-				var list = data.list;
+				var imgUrl = data.imgUrl;
+				var _data$imgExt = data.imgExt;
+				var imgExt = _data$imgExt === undefined ? 'PNG' : _data$imgExt;
+				var _data$titleColor = data.titleColor;
+				var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
+				var _data$list = data.list;
+				var list = _data$list === undefined ? [] : _data$list;
 
-				this.insertImage(img, 'PNG', padding, padding + 35, 3 * width / 5);
+				this.insertImage({
+					imgUrl: imgUrl,
+					imgExt: imgExt,
+					posX: padding,
+					posY: padding + 35,
+					width: 3 * width / 5
+				});
 
 				list.forEach(function (item, index) {
-					_this.setFontType("normal");
-					_this.insertText(item.title, 13, 3 * width / 5 + padding + 10, padding + 55 * (index + 1));
-					_this.setFontType("bold");
-					_this.insertText(item.subTitle, 26, 3 * width / 5 + padding + 10, padding + 80 + 55 * index, '', titleColor[0], titleColor[1], titleColor[2]);
+					_this.setFontType('normal');
+
+					_this.insertText({
+						text: item.title,
+						fontSize: 13,
+						posX: 3 * width / 5 + padding + 10,
+						posY: padding + 55 * (index + 1)
+					});
+
+					_this.setFontType('bold');
+
+					_this.insertText({
+						text: item.subTitle,
+						fontSize: 26,
+						posX: 3 * width / 5 + padding + 10,
+						posY: padding + 80 + 55 * index,
+						color: titleColor
+					});
 				});
 			});
 		})();
 	}, { "../class": 1 }], 5: [function (require, module, exports) {
+		'use strict';
+
+		/**
+   * Title and paragraph list layout
+   */
+
+		;
+		(function () {
+			'use strict';
+
+			var PDF = require('../class');
+
+			PDF.addLayout('titleAndParagList', function (data) {
+				var _this = this;
+
+				var doc = this.doc;
+				var width = this.width;
+				var height = this.height;
+				var padding = this.padding;
+				var _data$titleColor = data.titleColor;
+				var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
+				var _data$list = data.list;
+				var list = _data$list === undefined ? [] : _data$list;
+
+				list.forEach(function (item, index) {
+					_this.setFontType('bold');
+
+					_this.insertText({
+						text: item.title,
+						fontSize: 15,
+						posX: padding,
+						posY: padding + 55 * (index + 1),
+						color: titleColor
+					});
+
+					_this.setFontType('normal');
+
+					_this.insertText({
+						text: item.parag,
+						fontSize: 12,
+						posX: padding,
+						posY: padding + 70 + 55 * index
+					});
+				});
+			});
+		})();
+	}, { "../class": 1 }], 6: [function (require, module, exports) {
 		'use strict';
 
 		// Layouts
@@ -276,9 +415,10 @@
 		require('./layouts/cover');
 		require('./layouts/imgWithList');
 		require('./layouts/fullWidthImg');
+		require('./layouts/titleAndParagList');
 
 		module.exports = require('./class');
-	}, { "./class": 1, "./layouts/cover": 2, "./layouts/fullWidthImg": 3, "./layouts/imgWithList": 4 }], 6: [function (require, module, exports) {
+	}, { "./class": 1, "./layouts/cover": 2, "./layouts/fullWidthImg": 3, "./layouts/imgWithList": 4, "./layouts/titleAndParagList": 5 }], 7: [function (require, module, exports) {
 		(function () {
 			'use strict';
 
@@ -287,23 +427,33 @@
 
 			// Add cover page
 			pdfDoc.add('cover', {
-				topImg: 'logo1.png',
+				topImgUrl: 'logo1.png',
 				title: 'Souq.com Page Likes Campaign',
 				subTitle: '1st December 2015 - 3rd February 2016',
 				subSubTitle: 'Page likes campaign with target: 15000',
-				lowerImg: 'logo2.png'
+				bottomImgUrl: 'logo2.png'
 			});
 
-			// Create new page
-			pdfDoc.addPage(pdfDoc.width, pdfDoc.height);
+			// Add new page
+			pdfDoc.addPage({
+				width: pdfDoc.width,
+				height: pdfDoc.height
+			});
 
-			// Insert header, and footer
-			pdfDoc.insertHeader('Socialbakers Export');
-			pdfDoc.insertFooter('Page 2/10', 'center');
+			// Insert page header
+			pdfDoc.insertHeader({
+				text: 'Socialbakers Export'
+			});
+
+			// Insert page footer
+			pdfDoc.insertFooter({
+				text: 'Page 2/10',
+				align: 'center'
+			});
 
 			// Insert image with list
 			pdfDoc.add('imgWithList', {
-				img: 'chart1.png',
+				imgUrl: 'chart1.png',
 				titleColor: [247, 175, 48],
 				list: [{
 					title: 'Total Fans',
@@ -319,11 +469,74 @@
 
 			// Insert full width image
 			pdfDoc.add('fullWidthImg', {
-				img: 'map.jpg'
+				imgUrl: 'map.jpg'
 			});
 
-			window.pdfDoc = pdfDoc;
+			// Add new page
+			pdfDoc.addPage({
+				width: pdfDoc.width,
+				height: pdfDoc.height
+			});
+
+			// Insert page header
+			pdfDoc.insertHeader({
+				text: 'Socialbakers Export'
+			});
+
+			// Insert page footer
+			pdfDoc.insertFooter({
+				text: 'Page 3/10',
+				align: 'center'
+			});
+
+			// Insert image with list
+			pdfDoc.add('titleAndParagList', {
+				titleColor: [247, 175, 48],
+				list: [{
+					title: 'Growth of Total Fans',
+					parag: 'This graph shows the increase or decrease in fans during a selected time range.'
+				}, {
+					title: 'Distribution of Fans',
+					parag: 'Distribution of fans in different countries.'
+				}, {
+					title: 'Number of Page Posts',
+					parag: 'The sum of all posts posted by each Page'
+				}, {
+					title: 'Distribution of Page Post Types',
+					parag: 'This shows the breakdown of the posts according to the post type during a selected time range.'
+				}, {
+					title: 'Number of Fan Posts',
+					parag: 'The number of fan posts a page received during a selected time range.'
+				}, {
+					title: 'Evolution of Interactions',
+					parag: 'The daily sum of interactions from monitored social media profiles.'
+				}, {
+					title: 'Distribution of Interactions',
+					parag: 'The distribution of interactions (likes, comments, shares) during a selected time range.'
+				}, {
+					title: 'Most Engaging Post Types',
+					parag: 'This shows the average interactions per 1000 fans by post type during a selected time range.'
+				}, {
+					title: 'User Activity',
+					parag: 'This  graph  shows  the  total  number  of  all  user  posts  (user  posts,  questions  and  comments)  by  day  of  the  week  and  by  hour  of  the  day during a selected time range.'
+				}, {
+					title: 'Number of Interactions per 1000 Fans',
+					parag: 'Every post has the metric Number of interactions per 1000 fans that identifies how engaging the post is. It is the sum of interactions (likes, comments,  and  shares)  divided  by  the  number  of  fans  a  page  has  on  the  day  of  the  post  and  multiplied  by  1000.  The  daily,  weekly  and monthly values for this metric are then calculated as the sum of this metric for all posts made on a particular day, during a particular week or month.'
+				}, {
+					title: 'Response Rate for User Questions',
+					parag: 'This  graph  shows  the  percentage  and  the  number  of  user  questions  the  monitored  page  responded  to  versus  the  percentage  and  the number of user questions that did not receive a response during the selected time range. A user question is a user post on the company\'s page or a user post mentioning the company\'s page that contains a question mark in one of several possible languages (English, Armenian, Arabic, Japanese, and others). User questions that were either marked as spam, hidden, or deleted by the admin are not included.'
+				}, {
+					title: 'Number of User Questions',
+					parag: 'The total number of received questions during a selected time range.'
+				}, {
+					title: 'Avg Response Time',
+					parag: 'The average time it took the monitored page to respond to a user post (or question) during a selected time range.'
+				}, {
+					title: 'Response Time Segments for User Questions',
+					parag: 'This  graph  shows  a  breakdown  of  the  time  it  took  the  monitored  page  to  respond  to  user  questions  during  a  selected  time  range.  The following  time  intervals  are  used:  under  10  minutes,  10-30  minutes,  30–60  minutes,  60–90  minutes,  90  minutes  -  2  hours,  2-4  hours,  4-6 hours, 6-12 hours, 12-24 hours, 24-48 hours, 48-72 hours, or more than 72 hours. A user question is a user post on the company\'s page or a user post mentioning the company\'s page that contains a question mark in one of several possible languages (English, Armenian, Arabic, Japanese, and others). User questions that were either marked as spam, hidden, or deleted by the admin are not included.'
+				}]
+			});
 
 			document.getElementById('save').onclick = pdfDoc.save.bind(pdfDoc, null);
 		})();
-	}, { "../../dist/pdfcreator": 5 }] }, {}, [6]);
+	}, { "../../dist/pdfcreator": 6 }] }, {}, [7]);

@@ -17,18 +17,42 @@
 		var width = this.width;
 		var height = this.height;
 		var padding = this.padding;
-		var img = data.img;
-		var titleColor = data.titleColor;
-		var list = data.list;
+		var imgUrl = data.imgUrl;
+		var _data$imgExt = data.imgExt;
+		var imgExt = _data$imgExt === undefined ? 'PNG' : _data$imgExt;
+		var _data$titleColor = data.titleColor;
+		var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
+		var _data$list = data.list;
+		var list = _data$list === undefined ? [] : _data$list;
 
 
-		this.insertImage(img, 'PNG', padding, padding + 35, 3 * width / 5);
+		this.insertImage({
+			imgUrl: imgUrl,
+			imgExt: imgExt,
+			posX: padding,
+			posY: padding + 35,
+			width: 3 * width / 5
+		});
 
 		list.forEach(function (item, index) {
-			_this.setFontType("normal");
-			_this.insertText(item.title, 13, 3 * width / 5 + padding + 10, padding + 55 * (index + 1));
-			_this.setFontType("bold");
-			_this.insertText(item.subTitle, 26, 3 * width / 5 + padding + 10, padding + 80 + 55 * index, '', titleColor[0], titleColor[1], titleColor[2]);
+			_this.setFontType('normal');
+
+			_this.insertText({
+				text: item.title,
+				fontSize: 13,
+				posX: 3 * width / 5 + padding + 10,
+				posY: padding + 55 * (index + 1)
+			});
+
+			_this.setFontType('bold');
+
+			_this.insertText({
+				text: item.subTitle,
+				fontSize: 26,
+				posX: 3 * width / 5 + padding + 10,
+				posY: padding + 80 + 55 * index,
+				color: titleColor
+			});
 		});
 	});
 })();

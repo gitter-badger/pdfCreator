@@ -24,15 +24,15 @@
 			this.doc.setFontType(type);
 		}
 	
-		insertHeader (text, alignment) {
+		insertHeader ({text, align}) {
 			this.doc.setFontSize(12);
-			this.doc.text(text, alignment === 'center' ? this.padding / 2 : this.padding, this.padding, alignment);
+			this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
 			this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
 		}
 
-		insertFooter (text, alignment, linkText, linkUrl) {
+		insertFooter ({text, align, linkText, linkUrl}) {
 			this.doc.setFontSize(10);
-			this.doc.text(text, alignment === 'center' ? this.width / 2 : this.padding, this.height - this.padding, alignment);
+			this.doc.text(text, align === 'center' ? this.width / 2 : this.padding, this.height - this.padding, align);
 			this.doc.line(this.padding, this.height - this.padding - 12, this.width - this.padding, this.height - this.padding - 12);
 
 			if (linkText && linkUrl) {
@@ -62,10 +62,10 @@
 			img.src = url;
 		}
 
-		insertImage (imageUrl, imageFormat, posX, posY, width, height) {
+		insertImage ({imgUrl, imgExt, posX, posY, width, height}) {
 			const crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
-			this.toDataUrl(imageUrl, (base64Img, imgWidth, imgHeight) => {
+			this.toDataUrl(imgUrl, (base64Img, imgWidth, imgHeight) => {
 				const ratio = imgHeight / imgWidth;
 
 				imgWidth = width || imgWidth;
@@ -76,21 +76,17 @@
 				}
 
 				this.doc.setPage(crtPageNumber);
-				this.doc.addImage(base64Img, imageFormat, posX, posY, imgWidth, imgHeight);
+				this.doc.addImage(base64Img, imgExt, posX, posY, imgWidth, imgHeight);
 			});
 		}
 		
-		insertText (text, fontSize, posX, posY, alignment, colR, colG, colB) {
-			colR = colR || 0;
-			colG = colG || 0;
-			colB = colB || 0;
-
+		insertText ({text, fontSize, posX, posY, align, color = [0, 0, 0]}) {
 			this.doc.setFontSize(fontSize);
-			this.doc.setTextColor(colR, colG, colB);
-			this.doc.text(text, posX, posY, alignment || '');
+			this.doc.setTextColor(color[0], color[1], color[2]);
+			this.doc.text(text, posX, posY, align || '');
 		}
 		
-		addPage (width, height) {
+		addPage ({width, height}) {
 			this.doc.addPage(width, height);
 		}
 		
