@@ -21,27 +21,38 @@
 		var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
 		var _data$list = data.list;
 		var list = _data$list === undefined ? [] : _data$list;
+		var lineNumbers = data.lineNumbers;
 
+		// Track and update posY, after adding each title/parag
+
+		var posY = padding + 55;
 
 		list.forEach(function (item, index) {
 			_this.setFontType('bold');
 
-			_this.insertText({
-				text: item.title,
+			var titleHeight = _this.insertText({
+				text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
 				fontSize: 15,
 				posX: padding,
-				posY: padding + 55 * (index + 1),
+				posY: posY,
 				color: titleColor
 			});
 
+			posY += titleHeight;
+
 			_this.setFontType('normal');
 
-			_this.insertText({
+			var paragHeight = _this.insertText({
 				text: item.parag,
-				fontSize: 12,
+				fontSize: 10,
 				posX: padding,
-				posY: padding + 70 + 55 * index
+				posY: posY
 			});
+
+			console.log(titleHeight);
+			console.log(paragHeight);
+
+			posY += paragHeight + 20;
 		});
 	});
 })();

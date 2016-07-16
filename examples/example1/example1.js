@@ -74,6 +74,7 @@
 
     // Insert image with list
     pdfDoc.add('titleAndParagList', {
+    	lineNumbers: true,
     	titleColor: [247, 175, 48],
     	list: [
 			{
@@ -124,14 +125,14 @@
 				title: 'Number of User Questions',
 				parag: 'The total number of received questions during a selected time range.'
 			},
-			{
-				title: 'Avg Response Time',
-				parag: 'The average time it took the monitored page to respond to a user post (or question) during a selected time range.'
-			},
-			{
-				title: 'Response Time Segments for User Questions',
-				parag: 'This  graph  shows  a  breakdown  of  the  time  it  took  the  monitored  page  to  respond  to  user  questions  during  a  selected  time  range.  The following  time  intervals  are  used:  under  10  minutes,  10-30  minutes,  30–60  minutes,  60–90  minutes,  90  minutes  -  2  hours,  2-4  hours,  4-6 hours, 6-12 hours, 12-24 hours, 24-48 hours, 48-72 hours, or more than 72 hours. A user question is a user post on the company\'s page or a user post mentioning the company\'s page that contains a question mark in one of several possible languages (English, Armenian, Arabic, Japanese, and others). User questions that were either marked as spam, hidden, or deleted by the admin are not included.'
-			}
+			// {
+			// 	title: 'Avg Response Time',
+			// 	parag: 'The average time it took the monitored page to respond to a user post (or question) during a selected time range.'
+			// },
+			// {
+			// 	title: 'Response Time Segments for User Questions',
+			// 	parag: 'This  graph  shows  a  breakdown  of  the  time  it  took  the  monitored  page  to  respond  to  user  questions  during  a  selected  time  range.  The following  time  intervals  are  used:  under  10  minutes,  10-30  minutes,  30–60  minutes,  60–90  minutes,  90  minutes  -  2  hours,  2-4  hours,  4-6 hours, 6-12 hours, 12-24 hours, 24-48 hours, 48-72 hours, or more than 72 hours. A user question is a user post on the company\'s page or a user post mentioning the company\'s page that contains a question mark in one of several possible languages (English, Armenian, Arabic, Japanese, and others). User questions that were either marked as spam, hidden, or deleted by the admin are not included.'
+			// }
 		]
     });
 

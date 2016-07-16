@@ -73,8 +73,12 @@
 					value: function insertHeader(_ref) {
 						var text = _ref.text;
 						var align = _ref.align;
+						var _ref$color = _ref.color;
+						var color = _ref$color === undefined ? [0, 0, 0] : _ref$color;
 
 						this.doc.setFontSize(12);
+						this.doc.setTextColor(color[0], color[1], color[2]);
+						this.setFontType('normal');
 						this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
 						this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
 					}
@@ -83,10 +87,14 @@
 					value: function insertFooter(_ref2) {
 						var text = _ref2.text;
 						var align = _ref2.align;
+						var _ref2$color = _ref2.color;
+						var color = _ref2$color === undefined ? [0, 0, 0] : _ref2$color;
 						var linkText = _ref2.linkText;
 						var linkUrl = _ref2.linkUrl;
 
 						this.doc.setFontSize(10);
+						this.setFontType('normal');
+						this.doc.setTextColor(color[0], color[1], color[2]);
 						this.doc.text(text, align === 'center' ? this.width / 2 : this.padding, this.height - this.padding, align);
 						this.doc.line(this.padding, this.height - this.padding - 12, this.width - this.padding, this.height - this.padding - 12);
 
@@ -158,7 +166,12 @@
 
 						this.doc.setFontSize(fontSize);
 						this.doc.setTextColor(color[0], color[1], color[2]);
-						this.doc.text(text, posX, posY, align || '');
+
+						// Split text first into lines if it exceeded the max length
+						var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+						this.doc.text(splittedText, posX, posY, align || '');
+
+						return this.doc.internal.getLineHeight() * splittedText.length;
 					}
 				}, {
 					key: 'addPage',
@@ -384,26 +397,38 @@
 				var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
 				var _data$list = data.list;
 				var list = _data$list === undefined ? [] : _data$list;
+				var lineNumbers = data.lineNumbers;
+
+				// Track and update posY, after adding each title/parag
+
+				var posY = padding + 55;
 
 				list.forEach(function (item, index) {
 					_this.setFontType('bold');
 
-					_this.insertText({
-						text: item.title,
+					var titleHeight = _this.insertText({
+						text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
 						fontSize: 15,
 						posX: padding,
-						posY: padding + 55 * (index + 1),
+						posY: posY,
 						color: titleColor
 					});
 
+					posY += titleHeight;
+
 					_this.setFontType('normal');
 
-					_this.insertText({
+					var paragHeight = _this.insertText({
 						text: item.parag,
-						fontSize: 12,
+						fontSize: 10,
 						posX: padding,
-						posY: padding + 70 + 55 * index
+						posY: posY
 					});
+
+					console.log(titleHeight);
+					console.log(paragHeight);
+
+					posY += paragHeight + 20;
 				});
 			});
 		})();
@@ -491,6 +516,7 @@
 
 			// Insert image with list
 			pdfDoc.add('titleAndParagList', {
+				lineNumbers: true,
 				titleColor: [247, 175, 48],
 				list: [{
 					title: 'Growth of Total Fans',
@@ -528,12 +554,6 @@
 				}, {
 					title: 'Number of User Questions',
 					parag: 'The total number of received questions during a selected time range.'
-				}, {
-					title: 'Avg Response Time',
-					parag: 'The average time it took the monitored page to respond to a user post (or question) during a selected time range.'
-				}, {
-					title: 'Response Time Segments for User Questions',
-					parag: 'This  graph  shows  a  breakdown  of  the  time  it  took  the  monitored  page  to  respond  to  user  questions  during  a  selected  time  range.  The following  time  intervals  are  used:  under  10  minutes,  10-30  minutes,  30–60  minutes,  60–90  minutes,  90  minutes  -  2  hours,  2-4  hours,  4-6 hours, 6-12 hours, 12-24 hours, 24-48 hours, 48-72 hours, or more than 72 hours. A user question is a user post on the company\'s page or a user post mentioning the company\'s page that contains a question mark in one of several possible languages (English, Armenian, Arabic, Japanese, and others). User questions that were either marked as spam, hidden, or deleted by the admin are not included.'
 				}]
 			});
 

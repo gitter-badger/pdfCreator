@@ -10,27 +10,37 @@
 
 	PDF.addLayout('titleAndParagList', function (data) {
 		const {doc, width, height, padding} = this,
-			{titleColor = [0, 0, 0], list = []} = data;
+			{titleColor = [0, 0, 0], list = [], lineNumbers} = data;
+
+		// Track and update posY, after adding each title/parag
+		let posY = padding + 55;
 
 		list.forEach((item, index) => {
 			this.setFontType('bold');
 
-		    this.insertText({
-		    	text: item.title,
+		    const titleHeight = this.insertText({
+		    	text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
 		    	fontSize: 15,
 		    	posX: padding,
-		    	posY: padding + 55 * (index + 1), 
+		    	posY, 
 		    	color: titleColor
 		    });
 
+		    posY += titleHeight;
+
 		    this.setFontType('normal');
 
-		    this.insertText({
+		    const paragHeight = this.insertText({
 		    	text: item.parag,
-		    	fontSize: 12,
+		    	fontSize: 10,
 		    	posX: padding,
-		    	posY: padding + 70 + 55 * index
+		    	posY
 		    });
+
+		    console.log(titleHeight)
+		    console.log(paragHeight)
+
+		    posY += paragHeight + 20;
 		});
 	});
 })();

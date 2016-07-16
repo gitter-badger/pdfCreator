@@ -40,8 +40,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			value: function insertHeader(_ref) {
 				var text = _ref.text;
 				var align = _ref.align;
+				var _ref$color = _ref.color;
+				var color = _ref$color === undefined ? [0, 0, 0] : _ref$color;
 
 				this.doc.setFontSize(12);
+				this.doc.setTextColor(color[0], color[1], color[2]);
+				this.setFontType('normal');
 				this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
 				this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
 			}
@@ -50,10 +54,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			value: function insertFooter(_ref2) {
 				var text = _ref2.text;
 				var align = _ref2.align;
+				var _ref2$color = _ref2.color;
+				var color = _ref2$color === undefined ? [0, 0, 0] : _ref2$color;
 				var linkText = _ref2.linkText;
 				var linkUrl = _ref2.linkUrl;
 
 				this.doc.setFontSize(10);
+				this.setFontType('normal');
+				this.doc.setTextColor(color[0], color[1], color[2]);
 				this.doc.text(text, align === 'center' ? this.width / 2 : this.padding, this.height - this.padding, align);
 				this.doc.line(this.padding, this.height - this.padding - 12, this.width - this.padding, this.height - this.padding - 12);
 
@@ -125,7 +133,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 				this.doc.setFontSize(fontSize);
 				this.doc.setTextColor(color[0], color[1], color[2]);
-				this.doc.text(text, posX, posY, align || '');
+
+				// Split text first into lines if it exceeded the max length
+				var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+				this.doc.text(splittedText, posX, posY, align || '');
+
+				return this.doc.internal.getLineHeight() * splittedText.length;
 			}
 		}, {
 			key: 'addPage',
