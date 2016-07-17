@@ -6,53 +6,48 @@
 
 ;
 (function () {
-	'use strict';
+    'use strict';
 
-	var PDF = require('../class');
+    var PDF = require('../class');
 
-	PDF.addLayout('titleAndParagList', function (data) {
-		var _this = this;
+    PDF.addLayout('titleAndParagList', function (data) {
+        var _this = this;
 
-		var doc = this.doc;
-		var width = this.width;
-		var height = this.height;
-		var padding = this.padding;
-		var _data$titleColor = data.titleColor;
-		var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
-		var _data$list = data.list;
-		var list = _data$list === undefined ? [] : _data$list;
-		var lineNumbers = data.lineNumbers;
+        var doc = this.doc;
+        var width = this.width;
+        var height = this.height;
+        var padding = this.padding;
+        var _data$titleColor = data.titleColor;
+        var titleColor = _data$titleColor === undefined ? [0, 0, 0] : _data$titleColor;
+        var _data$list = data.list;
+        var list = _data$list === undefined ? [] : _data$list;
+        var lineNumbers = data.lineNumbers;
 
-		// Track and update posY, after adding each title/parag
+        // Track and update posY, after adding each title/parag
 
-		var posY = padding + 55;
+        var posY = padding + 55;
 
-		list.forEach(function (item, index) {
-			_this.setFontType('bold');
+        list.forEach(function (item, index) {
+            var titleHeight = _this.insertText({
+                text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
+                fontSize: 15,
+                posX: padding,
+                posY: posY,
+                color: titleColor,
+                type: 'bold'
+            });
 
-			var titleHeight = _this.insertText({
-				text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
-				fontSize: 15,
-				posX: padding,
-				posY: posY,
-				color: titleColor
-			});
+            posY += titleHeight;
 
-			posY += titleHeight;
+            var paragHeight = _this.insertText({
+                text: item.parag,
+                fontSize: 10,
+                posX: padding,
+                posY: posY,
+                type: 'normal'
+            });
 
-			_this.setFontType('normal');
-
-			var paragHeight = _this.insertText({
-				text: item.parag,
-				fontSize: 10,
-				posX: padding,
-				posY: posY
-			});
-
-			console.log(titleHeight);
-			console.log(paragHeight);
-
-			posY += paragHeight + 20;
-		});
-	});
+            posY += paragHeight + 20;
+        });
+    });
 })();
