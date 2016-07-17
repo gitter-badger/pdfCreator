@@ -128,16 +128,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 				var posX = _ref4.posX;
 				var posY = _ref4.posY;
 				var align = _ref4.align;
+				var type = _ref4.type;
 				var _ref4$color = _ref4.color;
 				var color = _ref4$color === undefined ? [0, 0, 0] : _ref4$color;
 
 				this.doc.setFontSize(fontSize);
 				this.doc.setTextColor(color[0], color[1], color[2]);
 
+				// Set the font-type if given
+				type && this.setFontType(type);
+
 				// Split text first into lines if it exceeded the max length
 				var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+
 				this.doc.text(splittedText, posX, posY, align || '');
 
+				// Return the added text height, to be used for calculation
 				return this.doc.internal.getLineHeight() * splittedText.length;
 			}
 		}, {

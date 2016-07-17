@@ -35,23 +35,21 @@
 		});
 
 		list.forEach(function (item, index) {
-			_this.setFontType('normal');
-
 			_this.insertText({
 				text: item.title,
 				fontSize: 13,
 				posX: 3 * width / 5 + padding + 10,
-				posY: padding + 55 * (index + 1)
+				posY: padding + 55 * (index + 1),
+				type: 'normal'
 			});
-
-			_this.setFontType('bold');
 
 			_this.insertText({
 				text: item.subTitle,
 				fontSize: 26,
 				posX: 3 * width / 5 + padding + 10,
 				posY: padding + 80 + 55 * index,
-				color: titleColor
+				color: titleColor,
+				type: 'bold'
 			});
 		});
 	});

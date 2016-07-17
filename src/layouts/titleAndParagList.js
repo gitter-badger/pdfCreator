@@ -16,29 +16,25 @@
 		let posY = padding + 55;
 
 		list.forEach((item, index) => {
-			this.setFontType('bold');
 
-		    const titleHeight = this.insertText({
-		    	text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
-		    	fontSize: 15,
-		    	posX: padding,
-		    	posY, 
-		    	color: titleColor
-		    });
+			const titleHeight = this.insertText({
+				text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
+				fontSize: 15,
+				posX: padding,
+				posY, 
+				color: titleColor,
+				type: 'bold'
+			});
 
 		    posY += titleHeight;
-
-		    this.setFontType('normal');
 
 		    const paragHeight = this.insertText({
 		    	text: item.parag,
 		    	fontSize: 10,
 		    	posX: padding,
-		    	posY
+		    	posY,
+		    	type: 'normal'
 		    });
-
-		    console.log(titleHeight)
-		    console.log(paragHeight)
 
 		    posY += paragHeight + 20;
 		});

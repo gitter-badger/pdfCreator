@@ -161,16 +161,22 @@
 						var posX = _ref4.posX;
 						var posY = _ref4.posY;
 						var align = _ref4.align;
+						var type = _ref4.type;
 						var _ref4$color = _ref4.color;
 						var color = _ref4$color === undefined ? [0, 0, 0] : _ref4$color;
 
 						this.doc.setFontSize(fontSize);
 						this.doc.setTextColor(color[0], color[1], color[2]);
 
+						// Set the font-type if given
+						type && this.setFontType(type);
+
 						// Split text first into lines if it exceeded the max length
 						var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+
 						this.doc.text(splittedText, posX, posY, align || '');
 
+						// Return the added text height, to be used for calculation
 						return this.doc.internal.getLineHeight() * splittedText.length;
 					}
 				}, {
@@ -352,23 +358,21 @@
 				});
 
 				list.forEach(function (item, index) {
-					_this.setFontType('normal');
-
 					_this.insertText({
 						text: item.title,
 						fontSize: 13,
 						posX: 3 * width / 5 + padding + 10,
-						posY: padding + 55 * (index + 1)
+						posY: padding + 55 * (index + 1),
+						type: 'normal'
 					});
-
-					_this.setFontType('bold');
 
 					_this.insertText({
 						text: item.subTitle,
 						fontSize: 26,
 						posX: 3 * width / 5 + padding + 10,
 						posY: padding + 80 + 55 * index,
-						color: titleColor
+						color: titleColor,
+						type: 'bold'
 					});
 				});
 			});
@@ -404,29 +408,25 @@
 				var posY = padding + 55;
 
 				list.forEach(function (item, index) {
-					_this.setFontType('bold');
 
 					var titleHeight = _this.insertText({
 						text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
 						fontSize: 15,
 						posX: padding,
 						posY: posY,
-						color: titleColor
+						color: titleColor,
+						type: 'bold'
 					});
 
 					posY += titleHeight;
-
-					_this.setFontType('normal');
 
 					var paragHeight = _this.insertText({
 						text: item.parag,
 						fontSize: 10,
 						posX: padding,
-						posY: posY
+						posY: posY,
+						type: 'normal'
 					});
-
-					console.log(titleHeight);
-					console.log(paragHeight);
 
 					posY += paragHeight + 20;
 				});

@@ -28,29 +28,25 @@
 		var posY = padding + 55;
 
 		list.forEach(function (item, index) {
-			_this.setFontType('bold');
 
 			var titleHeight = _this.insertText({
 				text: (lineNumbers ? index + 1 + '. ' : '') + item.title,
 				fontSize: 15,
 				posX: padding,
 				posY: posY,
-				color: titleColor
+				color: titleColor,
+				type: 'bold'
 			});
 
 			posY += titleHeight;
-
-			_this.setFontType('normal');
 
 			var paragHeight = _this.insertText({
 				text: item.parag,
 				fontSize: 10,
 				posX: padding,
-				posY: posY
+				posY: posY,
+				type: 'normal'
 			});
-
-			console.log(titleHeight);
-			console.log(paragHeight);
 
 			posY += paragHeight + 20;
 		});
