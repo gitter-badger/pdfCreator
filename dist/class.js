@@ -36,6 +36,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.doc.setFontType(type);
             }
         }, {
+            key: 'setFontSize',
+            value: function setFontSize(size) {
+                this.doc.setFontSize(size);
+            }
+        }, {
             key: 'insertHeader',
             value: function insertHeader(_ref) {
                 var text = _ref.text;
@@ -131,26 +136,52 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 var type = _ref4.type;
                 var _ref4$color = _ref4.color;
                 var color = _ref4$color === undefined ? [0, 0, 0] : _ref4$color;
+                var _ref4$maxAllowedHeigh = _ref4.maxAllowedHeight;
+                var maxAllowedHeight = _ref4$maxAllowedHeigh === undefined ? Infinity : _ref4$maxAllowedHeigh;
 
                 this.doc.setFontSize(fontSize);
                 this.doc.setTextColor(color[0], color[1], color[2]);
 
-                // Set the font-type if given
+                // Set the font-type if provided
                 type && this.setFontType(type);
 
-                // Split text first into lines if it exceeded the max length
-                var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+                // Firstly, split text into lines if it exceeded the max length
+                var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX)),
+                    fullTextHeight = this.doc.internal.getLineHeight() * splittedText.length;
 
+                // Check if the text height is larger than the max allowed height,
+                // then return false, so that we emit that the process didn't complete
+                if (fullTextHeight > maxAllowedHeight) {
+                    return false;
+                }
+
+                // Secondly, insert the splitted text to the doc
                 this.doc.text(splittedText, posX, posY, align || '');
 
                 // Return the added text height, to be used for calculation
+                return fullTextHeight;
+            }
+        }, {
+            key: 'getTextHeight',
+            value: function getTextHeight(_ref5) {
+                var text = _ref5.text;
+                var fontSize = _ref5.fontSize;
+                var posX = _ref5.posX;
+                var type = _ref5.type;
+                var align = _ref5.align;
+
+                this.setFontSize(fontSize);
+                type && this.setFontType(type);
+
+                var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+
                 return this.doc.internal.getLineHeight() * splittedText.length;
             }
         }, {
             key: 'addPage',
-            value: function addPage(_ref5) {
-                var width = _ref5.width;
-                var height = _ref5.height;
+            value: function addPage(_ref6) {
+                var width = _ref6.width;
+                var height = _ref6.height;
 
                 this.doc.addPage(width, height);
             }
@@ -162,11 +193,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }, {
             key: 'add',
             value: function add(layout, data) {
-                try {
-                    PDF.layouts[layout].call(this, data);
-                } catch (error) {
-                    console.error(error.message);
-                }
+                PDF.layouts[layout].call(this, data);
+                // try {
+                // } catch (error) {
+                //     console.error(error.message);
+                // }
             }
         }, {
             key: 'save',

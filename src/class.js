@@ -24,6 +24,10 @@
             this.doc.setFontType(type);
         }
     
+        setFontSize (size) {
+            this.doc.setFontSize(size);
+        }
+
         insertHeader ({text, align, color = [0, 0, 0]}) {
             this.doc.setFontSize(12);
             this.doc.setTextColor(color[0], color[1], color[2]);
@@ -84,20 +88,38 @@
             });
         }
         
-        insertText ({text, fontSize, posX, posY, align, type, color = [0, 0, 0]}) {
+        insertText ({text, fontSize, posX, posY, align, type, color = [0, 0, 0], maxAllowedHeight = Infinity}) {
             this.doc.setFontSize(fontSize);
             this.doc.setTextColor(color[0], color[1], color[2]);
 
-            // Set the font-type if given
+            // Set the font-type if provided
             type && this.setFontType(type);
 
-            // Split text first into lines if it exceeded the max length
+            // Firstly, split text into lines if it exceeded the max length
             const splittedText = this.doc.splitTextToSize(text, 
-                this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+                    this.width - this.padding - (align === 'center' ? posX / 2 : posX)),
+                fullTextHeight = this.doc.internal.getLineHeight() * splittedText.length;
 
-            this.doc.text(splittedText, posX, posY, align || '');
+            // Check if the text height is larger than the max allowed height,
+            // then return false, so that we emit that the process didn't complete
+            if (fullTextHeight > maxAllowedHeight) {
+                return false;
+            }
+
+            // Secondly, insert the splitted text to the doc
+            this.doc.text(splittedText, posX, posY, align || '');   
 
             // Return the added text height, to be used for calculation
+            return fullTextHeight;
+        }
+
+        getTextHeight ({text, fontSize, posX, type, align}) {
+            this.setFontSize(fontSize);
+            type && this.setFontType(type);
+
+            const splittedText = this.doc.splitTextToSize(text, 
+                    this.width - this.padding - (align === 'center' ? posX / 2 : posX));
+
             return this.doc.internal.getLineHeight() * splittedText.length;
         }
         
@@ -110,11 +132,11 @@
         }
         
         add (layout, data) {
-            try {
-                PDF.layouts[layout].call(this, data);
-            } catch (error) {
-                console.error(error.message);
-            }
+            PDF.layouts[layout].call(this, data);
+            // try {
+            // } catch (error) {
+            //     console.error(error.message);
+            // }
         }
         
         save(fileName) {
