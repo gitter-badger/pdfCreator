@@ -1,0 +1,9 @@
+approvals:
+  minimum: 1
+  pattern: "^(:\\+1:|👍)$"
+  veto:
+    pattern: "^(:\\-1:|👎)$"
+commit:
+  message:
+    patterns:
+      - "^(feat|fix|docs|style|refactor|perf|test|chore)\\([a-zA-Z0-9-._]+\\):.{3,}"
