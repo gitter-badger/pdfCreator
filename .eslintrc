@@ -1,0 +1,29 @@
+{
+    "extends": "eslint:recommended",
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jasmine": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "quotes": ["error", "single"],
+        "no-trailing-spaces": "error",
+        "no-inner-declarations": "off",
+        "no-whitespace-before-property": "error",
+        "space-before-function-paren": "error",
+        "space-infix-ops": "error",
+        "no-var": "error",
+        "eol-last": "error",
+        "semi": "error",
+        "semi-spacing": "error",
+        "arrow-spacing": ["error", { "before": true, "after": true }],
+        "block-scoped-var": "error",
+        "no-implicit-globals": "error"
+    },
+    "globals": {}
+}
