@@ -11,17 +11,17 @@
 
 /**
  * Page layout, it can be only the default layouts, or any other custom layouts
- * @type {Array}
+ * @type {object}
  */
 const Layouts = {};
 
-class PDF {
+class PDFCreator {
     /**
-     * Instantiate PDF document
-     * @param  {number} width   - Page width
-     * @param  {number} height  - Page height
-     * @param  {number} padding - Page padding
-     * @param  {number} unit    - Default measuring unit
+     * PDF document
+     * @param {number} width   - Page width
+     * @param {number} height  - Page height
+     * @param {number} padding - Page padding
+     * @param {number} unit    - Default measuring unit
      */
     constructor (width, height, padding, unit) {
         this.width = width;
@@ -166,7 +166,7 @@ class PDF {
     }
 
     add (layout, data) {
-        PDF.layouts[layout].call(this, data);
+        PDFCreator.layouts[layout].call(this, data);
         // try {
         // } catch (error) {
         //     console.error(error.message);
@@ -178,4 +178,7 @@ class PDF {
     }
 }
 
-export default PDF;
+export default PDFCreator;
+
+// Support loading PDFCreator directly in the browser
+if (window) window.PDFCreator = PDFCreator;
