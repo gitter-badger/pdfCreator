@@ -1,12 +1,13 @@
+import jsPDF from 'jspdf';
+
 /**
  * pdfCreator.js
  *
  * MIT License
  * Copyright (c) 2016 Muhammad Aref
  *
- * It is a library to follow a path on an image with specifing the first point,
- * and there are two ways to specify it, either with clicking on it using the
- * mouse or initialize the follower with the (x, y) parameters.
+ * It is a library to create rich PDF reports in the browser or in a node server
+ * using many default layouts, and also the library supports add custom layouts.
  */
 
 /**
@@ -14,6 +15,12 @@
  * @type {object}
  */
 const Layouts = {};
+
+/**
+ * Supported measuring units 
+ * @type {array}
+ */
+const SUPPORTED_UNITS = ['pt', 'mm', 'cm', 'in', 'px', 'pc', 'em', 'ex'];
 
 class PDFCreator {
     /**
@@ -24,6 +31,18 @@ class PDFCreator {
      * @param {number} unit    - Default measuring unit
      */
     constructor (width, height, padding, unit) {
+        if (isNaN(Number(width)) || isNaN(Number(height))) {
+            return console.error('The document dimensions should be numbers');
+        }
+
+        if (isNaN(Number(padding))) {
+            return console.error('The document padding should be number');
+        }
+
+        if (!SUPPORTED_UNITS.includes(unit)) {
+            return console.error(`The given unit "${unit}" is not supported`);
+        }
+
         this.width = width;
         this.height = height;
         this.padding = padding;
@@ -50,6 +69,11 @@ class PDFCreator {
         Layouts[name] = procedure;
     }
 
+    /**
+     * Get layout procedure (default layout, or custom)
+     * @param  {string}   - Layout name
+     * @return {function} - Layout procedure
+     */
     static getLayoutProcedure (name) {
         return Layouts[name];
     }

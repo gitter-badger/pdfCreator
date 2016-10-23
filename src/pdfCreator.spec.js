@@ -1,6 +1,5 @@
 import PDFCreator from './pdfCreator';
 
-
 describe('pdfCreator', () => {
     describe('method: addLayout', () => {
         beforeEach(() => {
@@ -26,10 +25,43 @@ describe('pdfCreator', () => {
     })
 
     describe('method: getLayoutProcedure', () => {
-        it('should return the procedure if the layout exists', () => {
+        it('should return procedure if the layout exists', () => {
             const procedure = () => 'header procedure';
             PDFCreator.addLayout('header', procedure);
             expect(PDFCreator.getLayoutProcedure('header')()).toBe('header procedure');
+        });
+
+        it('should return undefined if the layout not exists', () => {
+            expect(PDFCreator.getLayoutProcedure('my_header')).toBeUndefined();
+        });
+    });
+
+    describe('creating instance', () => {
+        beforeEach(() => {
+            spyOn(console, 'error').and.callThrough();
+        });
+
+        it('should create and return PDFCreator instance', () => {
+            const pdf = new PDFCreator(500, 800, 10, 'pt');
+            expect(pdf instanceof PDFCreator).toBe(true);
+        });
+
+        it('should log error if the document dimensions are not numbers', () => {
+            const pdf = new PDFCreator('width', 800, 10, 'pt');
+            expect(console.error).toHaveBeenCalledWith('The document dimensions should be numbers');
+            expect(pdf.doc).toBeUndefined();
+        });
+
+        it('should log error if the document padding is not number', () => {
+            const pdf = new PDFCreator(500, 800, 'padding', 'pt');
+            expect(console.error).toHaveBeenCalledWith('The document padding should be number');
+            expect(pdf.doc).toBeUndefined();
+        });
+
+        it('should log error if the given unit is not supported', () => {
+            const pdf = new PDFCreator(500, 800, 10, 'xxx');
+            expect(console.error).toHaveBeenCalledWith('The given unit "xxx" is not supported');
+            expect(pdf.doc).toBeUndefined();
         });
     });
 });
