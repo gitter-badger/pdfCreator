@@ -3847,7 +3847,7 @@ Q\n";
    *               2014 Diego Casorran, https://github.com/diegocr
    *               2014 James Robb, https://github.com/jamesbrobb
    *
-   * 
+   *
    */
 
   ;(function (jsPDFAPI) {
@@ -4803,6 +4803,7 @@ Q\n";
   		return txtWidth;
   	};
 
+
   	//TODO move into external library
   	jsPDFAPI.getLineHeight = function () {
   		return this.internal.getLineHeight();
@@ -4848,7 +4849,7 @@ Q\n";
 
   /**
    * This plugin mimics the HTML5 Canvas
-   * 
+   *
    * The goal is to provide a way for current canvas users to print directly to a PDF.
    */
 
@@ -4899,7 +4900,7 @@ Q\n";
    *               2014 James Hall, james@parall.ax
    *               2014 Diego Casorran, https://github.com/diegocr
    *
-   * 
+   *
    * ====================================================================
    */
 
@@ -6808,7 +6809,7 @@ Q\n";
    *               2014 Wolfgang Gassler, https://github.com/woolfg
    *               2014 Steven Spungin, https://github.com/flamenco
    *
-   * 
+   *
    * ====================================================================
    */
 
@@ -7778,11 +7779,11 @@ Q\n";
   	};
   })(jsPDF.API);
 
-  /** ==================================================================== 
+  /** ====================================================================
    * jsPDF JavaScript plugin
    * Copyright (c) 2013 Youssef Beddad, youssef.beddad@gmail.com
-   * 
-   * 
+   *
+   *
    * ====================================================================
    */
 
@@ -7841,7 +7842,7 @@ Q\n";
   		// pdf.internal.write("(page_" + (i + 1) + ")" + dests[i] + " 0
   		// R");
   		// }
-  		//				
+  		//
   		if (this.outline.root.children.length > 0) {
   			var lines = pdf.outline.render().split(/\r\n/);
   			for (var i = 0; i < lines.length; i++) {
@@ -8050,7 +8051,7 @@ Q\n";
    * jsPDF PNG PlugIn
    * Copyright (c) 2014 James Robb, https://github.com/jamesbrobb
    *
-   * 
+   *
    * ====================================================================
    */
 
@@ -8588,7 +8589,7 @@ Q\n";
    *               2014 Diego Casorran, https://github.com/diegocr
    */
   /**
-   * 
+   *
    * ====================================================================
    */
 
@@ -8598,7 +8599,7 @@ Q\n";
   	/**
    Returns an array of length matching length of the 'word' string, with each
    cell ocupied by the width of the char in that position.
-   
+
    @function
    @param word {String}
    @param widths {Object}
@@ -8646,13 +8647,13 @@ Q\n";
   	};
   	/**
    Returns a widths of string in a given font, if the font size is set as 1 point.
-   
+
    In other words, this is "proportional" value. For 1 unit of font size, the length
    of the string will be that much.
-   
+
    Multiply by font size to get actual width in *points*
    Then divide by 72 to get inches or divide by (72/25.6) to get 'mm' etc.
-   
+
    @public
    @function
    @param
@@ -8802,10 +8803,10 @@ Q\n";
    (in measurement units declared as default for the jsPDF instance)
    and the font's "widths" and "Kerning" tables, where available, to
    determine display length of a given string for a given font.
-   
+
    We use character's 100% of unit size (height) as width when Width
    table or other default width is not available.
-   
+
    @public
    @function
    @param text {String} Unencoded, regular JavaScript (Unicode, UTF-16 / UCS-2) string.
@@ -8886,13 +8887,13 @@ Q\n";
   	};
   })(jsPDF.API);
 
-  /** @preserve 
+  /** @preserve
   jsPDF standard_fonts_metrics plugin
   Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
   MIT license.
   */
   /**
-   * 
+   *
    * ====================================================================
    */
 
@@ -8904,9 +8905,9 @@ Q\n";
    # only 'uncompress' function is featured lower as JavaScript
    # if you want to unit test "roundtrip", just transcribe the reference
    # 'compress' function from Python into JavaScript
-   
+
    def compress(data):
-   
+
    	keys =   '0123456789abcdef'
    	values = 'klmnopqrstuvwxyz'
    	mapping = dict(zip(keys, values))
@@ -8919,7 +8920,7 @@ Q\n";
    		except:
    			keystring = key.join(["'","'"])
    			#print('Keystring is %s' % keystring)
-   
+
    		try:
    			if value < 0:
    				valuestring = hex(value)[3:]
@@ -8933,41 +8934,41 @@ Q\n";
    				valuestring = compress(value)
    			else:
    				raise Exception("Don't know what to do with value type %s" % type(value))
-   
+
    		vals.append(keystring+valuestring)
-   	
+
    	return '{' + ''.join(vals) + '}'
-   
+
    def uncompress(data):
-   
+
    	decoded = '0123456789abcdef'
    	encoded = 'klmnopqrstuvwxyz'
    	mapping = dict(zip(encoded, decoded))
-   
+
    	sign = +1
    	stringmode = False
    	stringparts = []
-   
+
    	output = {}
-   
+
    	activeobject = output
    	parentchain = []
-   
+
    	keyparts = ''
    	valueparts = ''
-   
+
    	key = None
-   
+
    	ending = set(encoded)
-   
+
    	i = 1
    	l = len(data) - 1 # stripping starting, ending {}
    	while i != l: # stripping {}
    		# -, {, }, ' are special.
-   
+
    		ch = data[i]
    		i += 1
-   
+
    		if ch == "'":
    			if stringmode:
    				# end of string mode
@@ -8980,7 +8981,7 @@ Q\n";
    		elif stringmode == True:
    			#print("Adding %s to stringpart" % ch)
    			stringparts.append(ch)
-   
+
    		elif ch == '{':
    			# start of object
    			parentchain.append( [activeobject, key] )
@@ -8994,7 +8995,7 @@ Q\n";
    			key = None
    			activeobject = parent
    			#DEBUG = False
-   
+
    		elif ch == '-':
    			sign = -1
    		else:
@@ -9020,15 +9021,15 @@ Q\n";
    					valueparts = ''
    				else:
    					valueparts += ch
-   
+
    			#debug(activeobject)
-   
+
    	return output
-   
+
    */
 
   	/**
-   Uncompresses data compressed into custom, base16-like format. 
+   Uncompresses data compressed into custom, base16-like format.
    @public
    @function
    @param
@@ -9122,7 +9123,7 @@ Q\n";
   		return output;
   	};
 
-  	// encoding = 'Unicode' 
+  	// encoding = 'Unicode'
   	// NOT UTF8, NOT UTF16BE/LE, NOT UCS2BE/LE. NO clever BOM behavior
   	// Actual 16bit char codes used.
   	// no multi-byte logic here
@@ -9131,8 +9132,8 @@ Q\n";
   	// {402: 131, 8211: 150, 8212: 151, 8216: 145, 8217: 146, 8218: 130, 8220: 147, 8221: 148, 8222: 132, 8224: 134, 8225: 135, 8226: 149, 8230: 133, 8364: 128, 8240:137, 8249: 139, 8250: 155, 710: 136, 8482: 153, 338: 140, 339: 156, 732: 152, 352: 138, 353: 154, 376: 159, 381: 142, 382: 158}
   	// as you can see, all Unicode chars are outside of 0-255 range. No char code conflicts.
   	// this means that you can give Win cp1252 encoded strings to jsPDF for rendering directly
-  	// as well as give strings with some (supported by these fonts) Unicode characters and 
-  	// these will be mapped to win cp1252 
+  	// as well as give strings with some (supported by these fonts) Unicode characters and
+  	// these will be mapped to win cp1252
   	// for example, you can send char code (cp1252) 0x80 or (unicode) 0x20AC, getting "Euro" glyph displayed in both cases.
 
   	var encodingBlock = {
@@ -9155,13 +9156,13 @@ Q\n";
   			//	, 'Symbol'
   			//	, 'ZapfDingbats'
   		} }
-  	/** 
+  	/**
    Resources:
    Font metrics data is reprocessed derivative of contents of
    "Font Metrics for PDF Core 14 Fonts" package, which exhibits the following copyright and license:
-   
+
    Copyright (c) 1989, 1990, 1991, 1992, 1993, 1997 Adobe Systems Incorporated. All Rights Reserved.
-   
+
    This file and the 14 PostScript(R) AFM files it accompanies may be used,
    copied, and distributed for any purpose and without charge, with or without
    modification, provided that all copyright notices are retained; that the AFM
@@ -9169,7 +9170,7 @@ Q\n";
    file or any of the AFM files are prominently noted in the modified file(s);
    and that this paragraph is not modified. Adobe Systems has no responsibility
    or obligation to support the use of the AFM files.
-   
+
    */
   	,
   	    fontMetrics = { 'Unicode': {
@@ -9248,7 +9249,7 @@ Q\n";
   Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
   */
   /**
-   * 
+   *
    * ====================================================================
    */
 
@@ -9258,10 +9259,10 @@ Q\n";
   	/**
    Parses SVG XML and converts only some of the SVG elements into
    PDF elements.
-   
+
    Supports:
     paths
-   
+
    @public
    @function
    @param
@@ -9395,11 +9396,11 @@ Q\n";
   	};
   })(jsPDF.API);
 
-  /** ==================================================================== 
+  /** ====================================================================
    * jsPDF total_pages plugin
    * Copyright (c) 2013 Eduardo Menezes de Morais, eduardo.morais@usp.br
-   * 
-   * 
+   *
+   *
    * ====================================================================
    */
 
@@ -9419,11 +9420,11 @@ Q\n";
     };
   })(jsPDF.API);
 
-  /** ==================================================================== 
+  /** ====================================================================
    * jsPDF XMP metadata plugin
    * Copyright (c) 2016 Jussi Utunen, u-jussi@suomi24.fi
-   * 
-   * 
+   *
+   *
    * ====================================================================
    */
 
@@ -10324,8 +10325,8 @@ Q\n";
    1. Redistributions of source code must retain the above copyright notice,
    this list of conditions and the following disclaimer.
 
-   2. Redistributions in binary form must reproduce the above copyright 
-   notice, this list of conditions and the following disclaimer in 
+   2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
    the documentation and/or other materials provided with the distribution.
 
    3. The names of the authors may not be used to endorse or promote products
@@ -11924,7 +11925,7 @@ Q\n";
   		function deflateReset(strm) {
   			strm.total_in = strm.total_out = 0;
   			strm.msg = null; //
-  			
+
   			that.pending = 0;
   			that.pending_out = 0;
 
@@ -12370,7 +12371,7 @@ Q\n";
   		};
   	};
   })(undefined);
-  
+
 
   /*
     html2canvas 0.5.0-beta3 <http://html2canvas.hertzen.com>
@@ -15898,8 +15899,8 @@ Q\n";
   # PNG.js
   # Copyright (c) 2011 Devon Govett
   # MIT LICENSE
-  # 
-  # 
+  #
+  #
   */
 
 
@@ -16362,7 +16363,7 @@ Q\n";
    *               Justin D'Arcangelo <justindarc@gmail.com>
    *               Yury Delendik
    *
-   * 
+   *
    */
 
   var DecodeStream = (function() {
@@ -16551,7 +16552,7 @@ Q\n";
       0x50001, 0x50011, 0x50009, 0x50019, 0x50005, 0x50015, 0x5000d, 0x5001d,
       0x50003, 0x50013, 0x5000b, 0x5001b, 0x50007, 0x50017, 0x5000f, 0x00000
     ]), 5];
-    
+
     function error(e) {
         throw new Error(e)
     }
@@ -17003,6 +17004,7 @@ Q\n";
   return jsPDF;
 
 }));
+
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -17025,6 +17027,8 @@ exports.default = _pdfCreator2.default;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -17107,28 +17111,50 @@ var PDFCreator = function () {
             this.doc.setFontSize(size);
         }
     }, {
-        key: 'insertHeader',
-        value: function insertHeader(_ref) {
-            var text = _ref.text;
-            var align = _ref.align;
-            var _ref$color = _ref.color;
-            var color = _ref$color === undefined ? [0, 0, 0] : _ref$color;
+        key: 'setTextColor',
+        value: function setTextColor(color) {
+            var _color$split = color.split(',');
 
-            this.doc.setFontSize(12);
+            var _color$split2 = _slicedToArray(_color$split, 3);
+
+            var r = _color$split2[0];
+            var g = _color$split2[1];
+            var b = _color$split2[2];
+
             this.doc.setTextColor(color[0], color[1], color[2]);
+        }
+
+        /**
+         * Insert header in the current active document page
+         * @param  {object} options - Header options and text value
+         */
+
+    }, {
+        key: 'insertHeader',
+        value: function insertHeader(options) {
+            var text = options.text;
+            var align = options.align;
+            var _options$color = options.color;
+            var color = _options$color === undefined ? '0, 0, 0' : _options$color;
+            var _options$fontSize = options.fontSize;
+            var fontSize = _options$fontSize === undefined ? 12 : _options$fontSize;
+
+
+            this.setFontSize(fontSize);
+            this.setTextColor(color);
             this.setFontType('normal');
             this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
             this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
         }
     }, {
         key: 'insertFooter',
-        value: function insertFooter(_ref2) {
-            var text = _ref2.text;
-            var align = _ref2.align;
-            var _ref2$color = _ref2.color;
-            var color = _ref2$color === undefined ? [0, 0, 0] : _ref2$color;
-            var linkText = _ref2.linkText;
-            var linkUrl = _ref2.linkUrl;
+        value: function insertFooter(_ref) {
+            var text = _ref.text;
+            var align = _ref.align;
+            var _ref$color = _ref.color;
+            var color = _ref$color === undefined ? [0, 0, 0] : _ref$color;
+            var linkText = _ref.linkText;
+            var linkUrl = _ref.linkUrl;
 
             this.doc.setFontSize(10);
             this.setFontType('normal');
@@ -17165,15 +17191,15 @@ var PDFCreator = function () {
         }
     }, {
         key: 'insertImage',
-        value: function insertImage(_ref3) {
+        value: function insertImage(_ref2) {
             var _this = this;
 
-            var imgUrl = _ref3.imgUrl;
-            var imgExt = _ref3.imgExt;
-            var posX = _ref3.posX;
-            var posY = _ref3.posY;
-            var width = _ref3.width;
-            var height = _ref3.height;
+            var imgUrl = _ref2.imgUrl;
+            var imgExt = _ref2.imgExt;
+            var posX = _ref2.posX;
+            var posY = _ref2.posY;
+            var width = _ref2.width;
+            var height = _ref2.height;
 
             var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
@@ -17193,17 +17219,17 @@ var PDFCreator = function () {
         }
     }, {
         key: 'insertText',
-        value: function insertText(_ref4) {
-            var text = _ref4.text;
-            var fontSize = _ref4.fontSize;
-            var posX = _ref4.posX;
-            var posY = _ref4.posY;
-            var align = _ref4.align;
-            var type = _ref4.type;
-            var _ref4$color = _ref4.color;
-            var color = _ref4$color === undefined ? [0, 0, 0] : _ref4$color;
-            var _ref4$maxAllowedHeigh = _ref4.maxAllowedHeight;
-            var maxAllowedHeight = _ref4$maxAllowedHeigh === undefined ? Infinity : _ref4$maxAllowedHeigh;
+        value: function insertText(_ref3) {
+            var text = _ref3.text;
+            var fontSize = _ref3.fontSize;
+            var posX = _ref3.posX;
+            var posY = _ref3.posY;
+            var align = _ref3.align;
+            var type = _ref3.type;
+            var _ref3$color = _ref3.color;
+            var color = _ref3$color === undefined ? [0, 0, 0] : _ref3$color;
+            var _ref3$maxAllowedHeigh = _ref3.maxAllowedHeight;
+            var maxAllowedHeight = _ref3$maxAllowedHeigh === undefined ? Infinity : _ref3$maxAllowedHeigh;
 
             this.doc.setFontSize(fontSize);
             this.doc.setTextColor(color[0], color[1], color[2]);
@@ -17229,12 +17255,12 @@ var PDFCreator = function () {
         }
     }, {
         key: 'getTextHeight',
-        value: function getTextHeight(_ref5) {
-            var text = _ref5.text;
-            var fontSize = _ref5.fontSize;
-            var posX = _ref5.posX;
-            var type = _ref5.type;
-            var align = _ref5.align;
+        value: function getTextHeight(_ref4) {
+            var text = _ref4.text;
+            var fontSize = _ref4.fontSize;
+            var posX = _ref4.posX;
+            var type = _ref4.type;
+            var align = _ref4.align;
 
             this.setFontSize(fontSize);
             type && this.setFontType(type);
@@ -17245,9 +17271,9 @@ var PDFCreator = function () {
         }
     }, {
         key: 'addPage',
-        value: function addPage(_ref6) {
-            var width = _ref6.width;
-            var height = _ref6.height;
+        value: function addPage(_ref5) {
+            var width = _ref5.width;
+            var height = _ref5.height;
 
             this.doc.addPage(width, height);
         }

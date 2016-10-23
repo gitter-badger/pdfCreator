@@ -11,7 +11,7 @@
   "author": "Muhammad Aref <muh.aref@live.com>",
   "license": "MIT",
   "main": [
-    "dist/pdfcreator.js"
+    "dist/index.js"
   ],
   "devDependencies": {
     "babel-polyfill": "^6.16.0",

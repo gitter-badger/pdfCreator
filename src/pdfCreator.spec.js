@@ -64,4 +64,27 @@ describe('pdfCreator', () => {
             expect(pdf.doc).toBeUndefined();
         });
     });
+
+    describe('font properties', () => {
+        let pdf;
+        let doc;
+
+        beforeEach(() => {
+            pdf = new PDFCreator(500, 800, 10, 'pt');
+            doc = pdf.doc;
+
+            spyOn(doc, 'setFontSize').and.callThrough();
+            spyOn(doc, 'setFontType').and.callThrough();
+        });
+
+        it('should set the doc font-size correctly', () => {
+            pdf.setFontSize(12);
+            expect(doc.setFontSize).toHaveBeenCalledWith(12);
+        });
+
+        it('should set the doc font-type correctly', () => {
+            pdf.setFontType('normal');
+            expect(doc.setFontType).toHaveBeenCalledWith('normal');
+        });
+    });
 });

@@ -86,9 +86,20 @@ class PDFCreator {
         this.doc.setFontSize(size);
     }
 
-    insertHeader ({text, align, color = [0, 0, 0]}) {
-        this.doc.setFontSize(12);
+    setTextColor (color) {
+        const [r, g, b] = color.split(',');
         this.doc.setTextColor(color[0], color[1], color[2]);
+    }
+
+    /**
+     * Insert header in the current active document page
+     * @param  {object} options - Header options and text value
+     */
+    insertHeader (options) {
+        const {text, align, color = '0, 0, 0', fontSize = 12} = options;
+
+        this.setFontSize(fontSize);
+        this.setTextColor(color);
         this.setFontType('normal');
         this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
         this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
