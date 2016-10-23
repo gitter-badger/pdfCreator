@@ -23,7 +23,8 @@
         "semi-spacing": "error",
         "arrow-spacing": ["error", { "before": true, "after": true }],
         "block-scoped-var": "error",
-        "no-implicit-globals": "error"
+        "no-implicit-globals": "error",
+        "no-console": ["error", { allow: ["warn", "error"] }]
     },
     "globals": {}
 }

@@ -17007,15 +17007,19 @@ Q\n";
 },{}],2:[function(require,module,exports){
 'use strict';
 
-var _jspdf = require('jspdf');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _jspdf2 = _interopRequireDefault(_jspdf);
+var _pdfCreator = require('./pdfCreator');
 
-require('./pdfCreator');
+var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./pdfCreator":3,"jspdf":1}],3:[function(require,module,exports){
+exports.default = _pdfCreator2.default;
+
+},{"./pdfCreator":3}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17023,6 +17027,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jspdf = require('jspdf');
+
+var _jspdf2 = _interopRequireDefault(_jspdf);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -17032,9 +17042,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * MIT License
  * Copyright (c) 2016 Muhammad Aref
  *
- * It is a library to follow a path on an image with specifing the first point,
- * and there are two ways to specify it, either with clicking on it using the
- * mouse or initialize the follower with the (x, y) parameters.
+ * It is a library to create rich PDF reports in the browser or in a node server
+ * using many default layouts, and also the library supports add custom layouts.
  */
 
 /**
@@ -17042,6 +17051,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @type {object}
  */
 var Layouts = {};
+
+/**
+ * Supported measuring units
+ * @type {array}
+ */
+var SUPPORTED_UNITS = ['pt', 'mm', 'cm', 'in', 'px', 'pc', 'em', 'ex'];
 
 var PDFCreator = function () {
     /**
@@ -17054,11 +17069,23 @@ var PDFCreator = function () {
     function PDFCreator(width, height, padding, unit) {
         _classCallCheck(this, PDFCreator);
 
+        if (isNaN(Number(width)) || isNaN(Number(height))) {
+            return console.error('The document dimensions should be numbers');
+        }
+
+        if (isNaN(Number(padding))) {
+            return console.error('The document padding should be number');
+        }
+
+        if (!SUPPORTED_UNITS.includes(unit)) {
+            return console.error('The given unit "' + unit + '" is not supported');
+        }
+
         this.width = width;
         this.height = height;
         this.padding = padding;
         this.unit = unit;
-        this.doc = new jsPDF({ unit: this.unit });
+        this.doc = new _jspdf2.default({ unit: this.unit });
     }
 
     /**
@@ -17254,6 +17281,13 @@ var PDFCreator = function () {
 
             Layouts[name] = procedure;
         }
+
+        /**
+         * Get layout procedure (default layout, or custom)
+         * @param  {string}   - Layout name
+         * @return {function} - Layout procedure
+         */
+
     }, {
         key: 'getLayoutProcedure',
         value: function getLayoutProcedure(name) {
@@ -17270,4 +17304,4 @@ exports.default = PDFCreator;
 
 if (window) window.PDFCreator = PDFCreator;
 
-},{}]},{},[2])
+},{"jspdf":1}]},{},[2])

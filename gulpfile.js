@@ -13,7 +13,6 @@ gulp.task('scripts', () => {
         }))
         .on('error', (e) => {
             console.log('>>> ERROR', e);
-            this.emit('end');
         })
         .pipe(gulp.dest('dist'));
 });

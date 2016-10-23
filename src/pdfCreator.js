@@ -17,7 +17,7 @@ import jsPDF from 'jspdf';
 const Layouts = {};
 
 /**
- * Supported measuring units 
+ * Supported measuring units
  * @type {array}
  */
 const SUPPORTED_UNITS = ['pt', 'mm', 'cm', 'in', 'px', 'pc', 'em', 'ex'];
@@ -113,7 +113,7 @@ class PDFCreator {
         img.crossOrigin = 'Anonymous';
 
         img.onload = function () {
-            var canvas = document.createElement('CANVAS'),
+            let canvas = document.createElement('CANVAS'),
                 ctx = canvas.getContext('2d'),
                 dataURL = void 0;
 
@@ -197,7 +197,7 @@ class PDFCreator {
         // }
     }
 
-    save(fileName) {
+    save (fileName) {
         this.doc.save(fileName || Date.now());
     }
 }

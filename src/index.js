@@ -1,2 +1,3 @@
-import jsPDF from 'jspdf';
-import './pdfCreator';
+import PDFCreator from './pdfCreator';
+
+export default PDFCreator;

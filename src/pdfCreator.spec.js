@@ -22,7 +22,7 @@ describe('pdfCreator', () => {
             expect(console.error)
                 .toHaveBeenCalledWith('You can not overwrite layout, this layout "footer" exists');
         });
-    })
+    });
 
     describe('method: getLayoutProcedure', () => {
         it('should return procedure if the layout exists', () => {
@@ -59,8 +59,8 @@ describe('pdfCreator', () => {
         });
 
         it('should log error if the given unit is not supported', () => {
-            const pdf = new PDFCreator(500, 800, 10, 'xxx');
-            expect(console.error).toHaveBeenCalledWith('The given unit "xxx" is not supported');
+            const pdf = new PDFCreator(500, 800, 10, 'wow');
+            expect(console.error).toHaveBeenCalledWith('The given unit "wow" is not supported');
             expect(pdf.doc).toBeUndefined();
         });
     });
