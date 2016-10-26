@@ -36,6 +36,31 @@ describe('pdfCreator', () => {
         });
     });
 
+    describe('method: hexToRgb', () => {
+        it('should return null if the given hex is not valid', () => {
+            const invalidHex = 'name';
+            expect(PDFCreator.hexToRgb(invalidHex)).toBe(null);
+        });
+
+        it('should return the correct equivalent rgb version', () => {
+            const hex1 = '#ff0';
+            const hex2 = '#ffff00';
+            const hex3 = '#000';
+            const hex4 = '#fff';
+            const hex5 = '#def';
+            const hex6 = '#dfd';
+            const hex7 = '#8a1b4e';
+
+            expect(PDFCreator.hexToRgb(hex1)).toEqual([255, 255, 0]);
+            expect(PDFCreator.hexToRgb(hex2)).toEqual([255, 255, 0]);
+            expect(PDFCreator.hexToRgb(hex3)).toEqual([0, 0, 0]);
+            expect(PDFCreator.hexToRgb(hex4)).toEqual([255, 255, 255]);
+            expect(PDFCreator.hexToRgb(hex5)).toEqual([221, 238, 255]);
+            expect(PDFCreator.hexToRgb(hex6)).toEqual([221, 255, 221]);
+            expect(PDFCreator.hexToRgb(hex7)).toEqual([138, 27, 78]);
+        });
+    });
+
     describe('creating instance', () => {
         beforeEach(() => {
             spyOn(console, 'error').and.callThrough();

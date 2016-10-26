@@ -22,6 +22,18 @@ const Layouts = {};
  */
 const SUPPORTED_UNITS = ['pt', 'mm', 'cm', 'in', 'px', 'pc', 'em', 'ex'];
 
+/**
+ * Full hex color version regex
+ * @type {RegExp}
+ */
+const FULL_HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
+
+/**
+ * Shorthand hex color regex
+ * @type {RegExp}
+ */
+const SHORTHAND_HEX_REGEX = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+
 class PDFCreator {
     /**
      * PDF document
@@ -55,6 +67,7 @@ class PDFCreator {
      * custom layouts
      * @param {string} name        - Layout name, should be unique
      * @param {function} procedure - Layout procedure
+     * @memberOf PDFCreator
      */
     static addLayout (name, procedure) {
         if (typeof name !== 'string')
@@ -73,9 +86,30 @@ class PDFCreator {
      * Get layout procedure (default layout, or custom)
      * @param  {string}   - Layout name
      * @return {function} - Layout procedure
+     * @memberOf PDFCreator
      */
     static getLayoutProcedure (name) {
         return Layouts[name];
+    }
+
+    /**
+     * Convert hex color to the equivalent rgb version
+     * @param  {string} hex - Hex color
+     * @return {array|null} - Equivalent rgb color
+     * @memberOf PDFCreator
+     */
+    static hexToRgb (hex) {
+        // Replace the shorthand hex with the full version
+        // #ff0 >> #ffff00
+        hex = hex.replace(SHORTHAND_HEX_REGEX, (m, r, g, b) => {
+            return r + r + g + g + b + b;
+        });
+
+        const result = FULL_HEX_REGEX.exec(hex);
+
+        return result
+            ? result.slice(1).map(num => parseInt(num, 16))
+            : null;
     }
 
     setFontType (type) {
@@ -88,12 +122,13 @@ class PDFCreator {
 
     setTextColor (color) {
         const [r, g, b] = color.split(',');
-        this.doc.setTextColor(color[0], color[1], color[2]);
+        this.doc.setTextColor(r, g, b);
     }
 
     /**
      * Insert header in the current active document page
      * @param  {object} options - Header options and text value
+     * @memberOf PDFCreator.prototype
      */
     insertHeader (options) {
         const {text, align, color = '0, 0, 0', fontSize = 12} = options;
