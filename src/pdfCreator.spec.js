@@ -90,26 +90,41 @@ describe('pdfCreator', () => {
         });
     });
 
-    describe('font properties', () => {
+    describe('setting font properties', () => {
         let pdf;
         let doc;
 
         beforeEach(() => {
             pdf = new PDFCreator(500, 800, 10, 'pt');
             doc = pdf.doc;
-
-            spyOn(doc, 'setFontSize').and.callThrough();
-            spyOn(doc, 'setFontType').and.callThrough();
         });
 
-        it('should set the doc font-size correctly', () => {
-            pdf.setFontSize(12);
-            expect(doc.setFontSize).toHaveBeenCalledWith(12);
+        describe('method: setFontSize', () => {
+            beforeEach(() => {
+                spyOn(console, 'error').and.callThrough();
+                spyOn(doc, 'setFontSize').and.callThrough();
+            });
+
+            it('should log error if the font-size is not number', () => {
+                pdf.setFontSize('small');
+                expect(console.error).toHaveBeenCalledWith('Font size should be a number');
+            });
+
+            it('should set the doc font-size correctly', () => {
+                pdf.setFontSize(12);
+                expect(doc.setFontSize).toHaveBeenCalledWith(12);
+            });
         });
 
-        it('should set the doc font-type correctly', () => {
-            pdf.setFontType('normal');
-            expect(doc.setFontType).toHaveBeenCalledWith('normal');
+        describe('method: setFontType', () => {
+            beforeEach(() => {
+                spyOn(doc, 'setFontType').and.callThrough();
+            });
+
+            it('should set the doc font-type correctly', () => {
+                pdf.setFontType('normal');
+                expect(doc.setFontType).toHaveBeenCalledWith('normal');
+            });
         });
     });
 });

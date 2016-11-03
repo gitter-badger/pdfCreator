@@ -17062,6 +17062,18 @@ var Layouts = {};
  */
 var SUPPORTED_UNITS = ['pt', 'mm', 'cm', 'in', 'px', 'pc', 'em', 'ex'];
 
+/**
+ * Full hex color version regex
+ * @type {RegExp}
+ */
+var FULL_HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
+
+/**
+ * Shorthand hex color regex
+ * @type {RegExp}
+ */
+var SHORTHAND_HEX_REGEX = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+
 var PDFCreator = function () {
     /**
      * PDF document
@@ -17097,17 +17109,34 @@ var PDFCreator = function () {
      * custom layouts
      * @param {string} name        - Layout name, should be unique
      * @param {function} procedure - Layout procedure
+     * @memberOf PDFCreator
      */
 
 
     _createClass(PDFCreator, [{
         key: 'setFontType',
+
+
+        /**
+         * Set the document font-type
+         * @param {string} type - Font type
+         * @memberOf PDFCreator.prototype
+         */
         value: function setFontType(type) {
             this.doc.setFontType(type);
         }
+
+        /**
+         * Set the document font-size
+         * @param {number} type - Font size
+         * @memberOf PDFCreator.prototype
+         */
+
     }, {
         key: 'setFontSize',
         value: function setFontSize(size) {
+            if (typeof size !== 'number') return console.error('Font size should be a number');
+
             this.doc.setFontSize(size);
         }
     }, {
@@ -17121,12 +17150,13 @@ var PDFCreator = function () {
             var g = _color$split2[1];
             var b = _color$split2[2];
 
-            this.doc.setTextColor(color[0], color[1], color[2]);
+            this.doc.setTextColor(r, g, b);
         }
 
         /**
          * Insert header in the current active document page
          * @param  {object} options - Header options and text value
+         * @memberOf PDFCreator.prototype
          */
 
     }, {
@@ -17312,12 +17342,36 @@ var PDFCreator = function () {
          * Get layout procedure (default layout, or custom)
          * @param  {string}   - Layout name
          * @return {function} - Layout procedure
+         * @memberOf PDFCreator
          */
 
     }, {
         key: 'getLayoutProcedure',
         value: function getLayoutProcedure(name) {
             return Layouts[name];
+        }
+
+        /**
+         * Convert hex color to the equivalent rgb version
+         * @param  {string} hex - Hex color
+         * @return {array|null} - Equivalent rgb color
+         * @memberOf PDFCreator
+         */
+
+    }, {
+        key: 'hexToRgb',
+        value: function hexToRgb(hex) {
+            // Replace the shorthand hex with the full version
+            // #ff0 >> #ffff00
+            hex = hex.replace(SHORTHAND_HEX_REGEX, function (m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+
+            var result = FULL_HEX_REGEX.exec(hex);
+
+            return result ? result.slice(1).map(function (num) {
+                return parseInt(num, 16);
+            }) : null;
         }
     }]);
 

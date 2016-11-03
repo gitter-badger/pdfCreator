@@ -112,11 +112,24 @@ class PDFCreator {
             : null;
     }
 
+    /**
+     * Set the document font-type
+     * @param {string} type - Font type
+     * @memberOf PDFCreator.prototype
+     */
     setFontType (type) {
         this.doc.setFontType(type);
     }
 
+    /**
+     * Set the document font-size
+     * @param {number} type - Font size
+     * @memberOf PDFCreator.prototype
+     */
     setFontSize (size) {
+        if (typeof size !== 'number')
+            return console.error('Font size should be a number');
+
         this.doc.setFontSize(size);
     }
 
