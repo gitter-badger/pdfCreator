@@ -1,4 +1,4 @@
-T License
+The MIT License (MIT)
 
 Copyright (c) 2016 Muhammad Aref Ali Hamada
 
