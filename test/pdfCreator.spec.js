@@ -1,4 +1,4 @@
-import PDFCreator from './pdfCreator';
+import PDFCreator from '../lib/pdfCreator';
 
 describe('pdfCreator', () => {
     describe('method: addLayout', () => {
@@ -124,6 +124,28 @@ describe('pdfCreator', () => {
             it('should set the doc font-type correctly', () => {
                 pdf.setFontType('normal');
                 expect(doc.setFontType).toHaveBeenCalledWith('normal');
+            });
+        });
+
+        describe('method: setTextColor', () => {
+            beforeEach(() => {
+                spyOn(console, 'error').and.callThrough();
+                spyOn(doc, 'setTextColor').and.callThrough();
+            });
+
+            it('should set the doc text-color correctly if it sent as RGB', () => {
+                pdf.setTextColor([0, 255, 255]);
+                expect(doc.setTextColor).toHaveBeenCalledWith(0, 255, 255);
+            });
+
+            it('should set the doc text-color correctly if it sent as HEX', () => {
+                pdf.setTextColor('#fff');
+                expect(doc.setTextColor).toHaveBeenCalledWith(255, 255, 255);
+            });
+
+            it('should log error if the text-color is neither RGB nor HEX', () => {
+                pdf.setTextColor('red');
+                expect(console.error).toHaveBeenCalledWith('Color should be array on RGB, or HEX color');
             });
         });
     });
