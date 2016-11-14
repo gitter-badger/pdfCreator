@@ -148,5 +148,34 @@ describe('pdfCreator', () => {
                 expect(console.error).toHaveBeenCalledWith('Color should be array on RGB, or HEX color');
             });
         });
+
+        describe('method: insertText', () => {
+            beforeEach(() => {
+                spyOn(doc, 'text').and.callThrough();
+                spyOn(console, 'error').and.callThrough();
+                spyOn(pdf, 'setFontSize').and.callThrough();
+                spyOn(pdf, 'setFontType').and.callThrough();
+                spyOn(pdf, 'setTextColor').and.callThrough();
+            });
+
+            it('should log error if the text is not string', () => {
+                pdf.insertText({
+                    text: 2555
+                });
+                expect(console.error).toHaveBeenCalledWith('Text sould be a string');
+            });
+
+            it('should set reqired text adjustments before inserting the text', () => {
+                pdf.insertText({
+                    text: 'my test text',
+                    size: 16,
+                    color: '#ff0000',
+                    type: 'bold'
+                });
+                expect(pdf.setFontSize).toHaveBeenCalledWith(16);
+                expect(pdf.setFontType).toHaveBeenCalledWith('bold');
+                expect(pdf.setTextColor).toHaveBeenCalledWith(255, 0, 0);
+            });
+        });
     });
 });

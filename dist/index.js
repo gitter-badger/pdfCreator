@@ -17558,12 +17558,14 @@ var PDFCreator = function () {
          * Insert text into the document with the given (x, y) coordinates
          * Also it supports multiple options of positioning the text according
          * to the given parameters
-         * @param  {string} options.text  - Text to be inserted
-         * @param  {number} options.size  - Font size
-         * @param  {number} options.size  - Font size
-         * @param  {number} options.x     - X position
-         * @param  {number} options.y     - Y position
-         * @param  {string} options.align - Text alignment
+         * @param  {string} options.text             - Text to be inserted
+         * @param  {number} options.size             - Font size
+         * @param  {number} options.size             - Font size
+         * @param  {number} options.x                - X position
+         * @param  {number} options.y                - Y position
+         * @param  {string} options.align            - Text alignment
+         * @param  {array|string} options.color      - Text color
+         * @param  {number} options.maxAllowedHeight - Max allowed lines-height
          * @memberOf PDFCreator.prototype
          */
 
@@ -17575,7 +17577,15 @@ var PDFCreator = function () {
                 type = _ref.type,
                 x = _ref.x,
                 y = _ref.y,
-                align = _ref.align;
+                _ref$align = _ref.align,
+                align = _ref$align === undefined ? '' : _ref$align,
+                color = _ref.color,
+                _ref$maxAllowedHeight = _ref.maxAllowedHeight,
+                maxAllowedHeight = _ref$maxAllowedHeight === undefined ? Infinity : _ref$maxAllowedHeight;
+
+            if (typeof text !== 'string') {
+                return console.error('Text sould be a string');
+            }
 
             // If the alignment is center, so we need to set x position as document
             // padding/2, to be centered correctly
@@ -17583,31 +17593,16 @@ var PDFCreator = function () {
                 x = this.padding / 2;
             }
 
-            this.doc.text(text, x, y, align);
-        }
-    }, {
-        key: 'insertText',
-        value: function insertText(_ref2) {
-            var text = _ref2.text,
-                fontSize = _ref2.fontSize,
-                posX = _ref2.posX,
-                posY = _ref2.posY,
-                align = _ref2.align,
-                type = _ref2.type,
-                _ref2$color = _ref2.color,
-                color = _ref2$color === undefined ? [0, 0, 0] : _ref2$color,
-                _ref2$maxAllowedHeigh = _ref2.maxAllowedHeight,
-                maxAllowedHeight = _ref2$maxAllowedHeigh === undefined ? Infinity : _ref2$maxAllowedHeigh;
-
-            this.doc.setFontSize(fontSize);
-            this.doc.setTextColor(color[0], color[1], color[2]);
-
-            // Set the font-type if provided
+            // Reqired text adjustments before inserting the text
+            size && this.setFontSize(size);
             type && this.setFontType(type);
+            color && this.setTextColor(color);
 
-            // Firstly, split text into lines if it exceeded the max length
-            var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX)),
-                fullTextHeight = this.doc.internal.getLineHeight() * splittedText.length;
+            // Firstly, split text into lines if it exceeded the max line-length
+            var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? x / 2 : x));
+
+            // Calculate full text-height, so in case of exceeding the given maxAllowedHeight
+            var fullTextHeight = this.doc.internal.getLineHeight() * splittedText.length;
 
             // Check if the text height is larger than the max allowed height,
             // then return false, so that we emit that the process didn't complete
@@ -17615,10 +17610,10 @@ var PDFCreator = function () {
                 return false;
             }
 
-            // Secondly, insert the splitted text to the doc
-            this.doc.text(splittedText, posX, posY, align || '');
+            // Secondly, insert the splitted text into the doc
+            this.doc.text(splittedText, x, y, align);
 
-            // Return the added text height, to be used for calculation
+            // Return the added text height, to be used for further calculation
             return fullTextHeight;
         }
 
@@ -17646,13 +17641,13 @@ var PDFCreator = function () {
         }
     }, {
         key: 'insertFooter',
-        value: function insertFooter(_ref3) {
-            var text = _ref3.text,
-                align = _ref3.align,
-                _ref3$color = _ref3.color,
-                color = _ref3$color === undefined ? [0, 0, 0] : _ref3$color,
-                linkText = _ref3.linkText,
-                linkUrl = _ref3.linkUrl;
+        value: function insertFooter(_ref2) {
+            var text = _ref2.text,
+                align = _ref2.align,
+                _ref2$color = _ref2.color,
+                color = _ref2$color === undefined ? [0, 0, 0] : _ref2$color,
+                linkText = _ref2.linkText,
+                linkUrl = _ref2.linkUrl;
 
             this.doc.setFontSize(10);
             this.setFontType('normal');
@@ -17689,15 +17684,15 @@ var PDFCreator = function () {
         }
     }, {
         key: 'insertImage',
-        value: function insertImage(_ref4) {
+        value: function insertImage(_ref3) {
             var _this = this;
 
-            var imgUrl = _ref4.imgUrl,
-                imgExt = _ref4.imgExt,
-                posX = _ref4.posX,
-                posY = _ref4.posY,
-                width = _ref4.width,
-                height = _ref4.height;
+            var imgUrl = _ref3.imgUrl,
+                imgExt = _ref3.imgExt,
+                posX = _ref3.posX,
+                posY = _ref3.posY,
+                width = _ref3.width,
+                height = _ref3.height;
 
             var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
@@ -17717,12 +17712,12 @@ var PDFCreator = function () {
         }
     }, {
         key: 'getTextHeight',
-        value: function getTextHeight(_ref5) {
-            var text = _ref5.text,
-                fontSize = _ref5.fontSize,
-                posX = _ref5.posX,
-                type = _ref5.type,
-                align = _ref5.align;
+        value: function getTextHeight(_ref4) {
+            var text = _ref4.text,
+                fontSize = _ref4.fontSize,
+                posX = _ref4.posX,
+                type = _ref4.type,
+                align = _ref4.align;
 
             this.setFontSize(fontSize);
             type && this.setFontType(type);
@@ -17733,9 +17728,9 @@ var PDFCreator = function () {
         }
     }, {
         key: 'addPage',
-        value: function addPage(_ref6) {
-            var width = _ref6.width,
-                height = _ref6.height;
+        value: function addPage(_ref5) {
+            var width = _ref5.width,
+                height = _ref5.height;
 
             this.doc.addPage(width, height);
         }
