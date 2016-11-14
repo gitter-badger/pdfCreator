@@ -162,7 +162,7 @@ describe('pdfCreator', () => {
                 pdf.insertText({
                     text: 2555
                 });
-                expect(console.error).toHaveBeenCalledWith('Text sould be a string');
+                expect(console.error).toHaveBeenCalledWith('Text should be a string');
             });
 
             it('should set reqired text adjustments before inserting the text', () => {
@@ -174,7 +174,17 @@ describe('pdfCreator', () => {
                 });
                 expect(pdf.setFontSize).toHaveBeenCalledWith(16);
                 expect(pdf.setFontType).toHaveBeenCalledWith('bold');
-                expect(pdf.setTextColor).toHaveBeenCalledWith(255, 0, 0);
+                expect(pdf.setTextColor).toHaveBeenCalledWith('#ff0000');
+            });
+
+            it('should return false if the given text exceeds the max allowed-height', () => {
+                const result = pdf.insertText({
+                    text: 'my test text is here, and it should be splitted into multi-lines array',
+                    size: 160,
+                    type: 'bold',
+                    maxAllowedHeight: 50
+                });
+                expect(result).toBe(false);
             });
         });
     });

@@ -5,7 +5,9 @@
   "scripts": {
     "start": "gulp",
     "test": "karma start",
-    "ci": "gulp lint --ci"
+    "ci": "gulp lint --ci",
+    "cover": "karma start --cover",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "repository": "https://github.com/LeoAref/pdfCreator.js",
   "author": "Muhammad Aref <muh.aref@live.com>",
@@ -19,19 +21,23 @@
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
     "browserify-istanbul": "^2.0.0",
+    "coveralls": "^2.11.15",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-browserify": "^0.5.1",
     "gulp-eslint": "^3.0.1",
     "gulp-if": "^2.0.1",
     "http-server": "^0.9.0",
+    "istanbul": "^0.4.5",
     "jasmine-core": "^2.5.2",
     "karma": "^1.3.0",
     "karma-babel-preprocessor": "^6.0.1",
     "karma-browserify": "^5.1.0",
     "karma-coverage": "^1.1.1",
+    "karma-coveralls": "^1.1.2",
     "karma-jasmine": "^1.0.2",
     "karma-phantomjs-launcher": "^1.0.2",
+    "minimist": "^1.2.0",
     "watchify": "^3.7.0"
   },
   "dependencies": {
