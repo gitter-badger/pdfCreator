@@ -15,7 +15,6 @@
         "no-trailing-spaces": "error",
         "no-inner-declarations": "off",
         "no-whitespace-before-property": "error",
-        "space-before-function-paren": "error",
         "space-infix-ops": "error",
         "no-var": "error",
         "eol-last": "error",

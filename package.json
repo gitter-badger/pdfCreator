@@ -1,11 +1,11 @@
 {
   "name": "pdfcreator.js",
   "version": "1.0.0",
-  "description": "A library for creating rich PDFs using JavaScript, it has multiple built-in layout, and the ability to create customs.",
+  "description": "A library for creating rich PDFs using JavaScript, it has multiple built-in layouts, and the ability to create custom layouts",
   "scripts": {
+    "start": "gulp",
     "test": "karma start",
-    "ci": "gulp lint --ci",
-    "start": "http-server -p 6300 -a localhost"
+    "ci": "gulp lint --ci"
   },
   "repository": "https://github.com/LeoAref/pdfCreator.js",
   "author": "Muhammad Aref <muh.aref@live.com>",

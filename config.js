@@ -2,7 +2,7 @@
 
 module.exports = {
     path: {
-    	all: 'src/**/*.js',
-        entry: 'src/index.js'
+    	all: 'lib/**/*.js',
+        entry: 'lib/index.js'
     }
 };

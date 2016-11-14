@@ -1,7 +1,7 @@
 const istanbul = require('browserify-istanbul');
 
-const srcFiles = './src/*.js';
-const specFiles = './src/**/*.spec.js';
+const srcFiles = './lib/*.js';
+const specFiles = './test/**/*.spec.js';
 
 module.exports = config => {
     config.set({
@@ -40,7 +40,7 @@ module.exports = config => {
         coverageReporter: {
             type : 'text'
         },
-        
+
         logLevel: config.LOG_DISABLE,
 
         browserify: {

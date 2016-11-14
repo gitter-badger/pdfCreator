@@ -1,4 +1,4 @@
-import PDFCreator from './pdfCreator';
+import PDFCreator from '../lib/pdfCreator';
 
 describe('pdfCreator', () => {
     describe('method: addLayout', () => {
@@ -90,26 +90,92 @@ describe('pdfCreator', () => {
         });
     });
 
-    describe('font properties', () => {
+    describe('setting font properties', () => {
         let pdf;
         let doc;
 
         beforeEach(() => {
             pdf = new PDFCreator(500, 800, 10, 'pt');
             doc = pdf.doc;
-
-            spyOn(doc, 'setFontSize').and.callThrough();
-            spyOn(doc, 'setFontType').and.callThrough();
         });
 
-        it('should set the doc font-size correctly', () => {
-            pdf.setFontSize(12);
-            expect(doc.setFontSize).toHaveBeenCalledWith(12);
+        describe('method: setFontSize', () => {
+            beforeEach(() => {
+                spyOn(console, 'error').and.callThrough();
+                spyOn(doc, 'setFontSize').and.callThrough();
+            });
+
+            it('should log error if the font-size is not number', () => {
+                pdf.setFontSize('small');
+                expect(console.error).toHaveBeenCalledWith('Font size should be a number');
+            });
+
+            it('should set the doc font-size correctly', () => {
+                pdf.setFontSize(12);
+                expect(doc.setFontSize).toHaveBeenCalledWith(12);
+            });
         });
 
-        it('should set the doc font-type correctly', () => {
-            pdf.setFontType('normal');
-            expect(doc.setFontType).toHaveBeenCalledWith('normal');
+        describe('method: setFontType', () => {
+            beforeEach(() => {
+                spyOn(doc, 'setFontType').and.callThrough();
+            });
+
+            it('should set the doc font-type correctly', () => {
+                pdf.setFontType('normal');
+                expect(doc.setFontType).toHaveBeenCalledWith('normal');
+            });
+        });
+
+        describe('method: setTextColor', () => {
+            beforeEach(() => {
+                spyOn(console, 'error').and.callThrough();
+                spyOn(doc, 'setTextColor').and.callThrough();
+            });
+
+            it('should set the doc text-color correctly if it sent as RGB', () => {
+                pdf.setTextColor([0, 255, 255]);
+                expect(doc.setTextColor).toHaveBeenCalledWith(0, 255, 255);
+            });
+
+            it('should set the doc text-color correctly if it sent as HEX', () => {
+                pdf.setTextColor('#fff');
+                expect(doc.setTextColor).toHaveBeenCalledWith(255, 255, 255);
+            });
+
+            it('should log error if the text-color is neither RGB nor HEX', () => {
+                pdf.setTextColor('red');
+                expect(console.error).toHaveBeenCalledWith('Color should be array on RGB, or HEX color');
+            });
+        });
+
+        describe('method: insertText', () => {
+            beforeEach(() => {
+                spyOn(doc, 'text').and.callThrough();
+                spyOn(console, 'error').and.callThrough();
+                spyOn(pdf, 'setFontSize').and.callThrough();
+                spyOn(pdf, 'setFontType').and.callThrough();
+                spyOn(pdf, 'setTextColor').and.callThrough();
+            });
+
+            it('should log error if the text is not string', () => {
+                pdf.insertText({
+                    text: 2555
+                });
+                expect(console.error).toHaveBeenCalledWith('Text sould be a string');
+            });
+
+            it('should set reqired text adjustments before inserting the text', () => {
+                pdf.insertText({
+                    text: 'my test text',
+                    size: 16,
+                    color: '#ff0000',
+                    type: 'bold'
+                });
+                expect(pdf.setFontSize).toHaveBeenCalledWith(16);
+                expect(pdf.setFontType).toHaveBeenCalledWith('bold');
+                expect(pdf.setTextColor).toHaveBeenCalledWith(255, 0, 0);
+            });
         });
     });
 });
