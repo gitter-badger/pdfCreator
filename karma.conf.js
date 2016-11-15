@@ -1,7 +1,9 @@
 const istanbul = require('browserify-istanbul');
+const parseArgs = require('minimist');
 
 const srcFiles = './lib/*.js';
 const specFiles = './test/**/*.spec.js';
+const args = parseArgs(process.argv.slice(2));
 
 module.exports = config => {
     config.set({
@@ -30,7 +32,6 @@ module.exports = config => {
             specFiles
         ],
 
-
         babelPreprocessor: {
               options: {
                 presets: ['es2015']
@@ -38,7 +39,9 @@ module.exports = config => {
         },
 
         coverageReporter: {
-            type : 'text'
+            type : args.cover ? 'lcov' : 'text',
+            subdir: '.',
+            dir: 'coverage/'
         },
 
         logLevel: config.LOG_DISABLE,
@@ -51,6 +54,10 @@ module.exports = config => {
                     ignore: ['**/node_modules/**', '**/index.js', '**/*.spec.js']
                 })
             ]
-        }
+        },
+
+        autoWatch: !args.cover,
+
+        singleRun: args.cover
     });
 };
