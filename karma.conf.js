@@ -1,5 +1,6 @@
 'use strict';
 
+const isparta = require('isparta');
 const istanbul = require('browserify-istanbul');
 const parseArgs = require('minimist');
 
@@ -13,15 +14,7 @@ module.exports = config => {
 
         reporters: ['dots', 'coverage'],
 
-        frameworks: [ 'browserify', 'jasmine'],
-
-        plugins: [
-            'karma-coverage',
-            'karma-babel-preprocessor',
-            'karma-phantomjs-launcher',
-            'karma-jasmine',
-            'karma-browserify'
-        ],
+        frameworks: ['browserify', 'jasmine'],
 
         preprocessors: {
             [srcFiles]: ['browserify'],
@@ -34,15 +27,8 @@ module.exports = config => {
             specFiles
         ],
 
-        babelPreprocessor: {
-              options: {
-                presets: ['es2015']
-            }
-        },
-
         coverageReporter: {
             reporters: [
-                { type: 'html', subdir: 'report-html' },
                 { type: 'text', subdir: '.' },
                 { type: 'lcov', subdir: '.' }
             ],
@@ -56,7 +42,8 @@ module.exports = config => {
             transform: [
                 ['babelify', {presets: ['es2015']}],
                 istanbul({
-                    ignore: ['**/node_modules/**', '**/index.js', '**/*.spec.js']
+                    instrumenter: isparta,
+                    ignore: ['**/node_modules/**', '**/*.spec.js']
                 })
             ]
         },
