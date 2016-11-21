@@ -167,18 +167,18 @@ var PDFCreator = function () {
          * to the given parameters
          * @param  {string} options.text             - Text to be inserted
          * @param  {number} options.size             - Font size
-         * @param  {number} options.size             - Font size
+         * @param  {number} options.type             - Font type
          * @param  {number} options.x                - X position
          * @param  {number} options.y                - Y position
          * @param  {string} options.align            - Text alignment
          * @param  {array|string} options.color      - Text color
          * @param  {number} options.maxAllowedHeight - Max allowed lines-height
+         * @return {number}                          - Inserted text height
          * @memberOf PDFCreator.prototype
          */
 
     }, {
         key: 'insertText',
-<<<<<<< b6b3ca1279e624605a1633f8a18a0479d9411123
         value: function insertText(_ref) {
             var text = _ref.text,
                 size = _ref.size,
@@ -192,22 +192,7 @@ var PDFCreator = function () {
                 maxAllowedHeight = _ref$maxAllowedHeight === undefined ? Infinity : _ref$maxAllowedHeight;
 
             if (typeof text !== 'string') {
-                return console.error('Text sould be a string');
-=======
-        value: function insertText(args) {
-            var text = args.text,
-                size = args.size,
-                type = args.type,
-                x = args.x,
-                y = args.y,
-                _args$align = args.align,
-                align = _args$align === undefined ? '' : _args$align,
-                color = args.color,
-                maxAllowedHeight = args.maxAllowedHeight;
-
-            if (typeof text !== 'string') {
                 return console.error('Text should be a string');
->>>>>>> refactor(pdfCreator): finish "insertText" method, and work on its unit testing
             }
 
             // If the alignment is center, so we need to set x position as document
@@ -229,7 +214,6 @@ var PDFCreator = function () {
 
             // Check if the text height is larger than the max allowed height,
             // then return false, so that we emit that the process didn't complete
-            console.log(args, maxAllowedHeight);
             if (fullTextHeight > maxAllowedHeight) {
                 return false;
             }
@@ -242,46 +226,57 @@ var PDFCreator = function () {
         }
 
         /**
-         * Insert header in the active document page
-         * @param {object} options - Header options
+         * Insert line into the document with the given (x1, y1, x2, y2) coordinates
+         * @param  {number} x1 - Horizonal starting point
+         * @param  {number} y1 - Vertical starting point
+         * @param  {number} x2 - Horizonal ending point
+         * @param  {number} y2 - Vertical ending point
          * @memberOf PDFCreator.prototype
          */
 
     }, {
+        key: 'insertLine',
+        value: function insertLine(x1, y1, x2, y2) {
+            // The default is a stright horizontal line, so if "y2" is missing
+            // set "y2" = "y1"
+            if (y2 === undefined) {
+                y2 = y1;
+            }
+
+            this.doc.line(x1, y1, x2, y2);
+        }
+
+        /**
+         * Insert header into the document
+         * @param  {string} options.text             - Text to be inserted
+         * @param  {number} options.size             - Font size
+         * @param  {number} options.type             - Font type
+         * @param  {string} options.align            - Text alignment
+         * @param  {array|string} options.color      - Text color
+         */
+
+    }, {
         key: 'insertHeader',
-        value: function insertHeader(options) {
-            var text = options.text,
-                align = options.align,
-                _options$color = options.color,
-                color = _options$color === undefined ? '#000' : _options$color,
-                _options$fontSize = options.fontSize,
-                fontSize = _options$fontSize === undefined ? 12 : _options$fontSize;
+        value: function insertHeader(_ref2) {
+            var text = _ref2.text,
+                size = _ref2.size,
+                type = _ref2.type,
+                align = _ref2.align,
+                color = _ref2.color;
 
-
-            this.setFontSize(fontSize);
-            this.setTextColor(color);
-            this.doc.text(text, align === 'center' ? this.padding / 2 : this.padding, this.padding, align);
-            this.doc.line(this.padding, this.padding + 7, this.width - this.padding, this.padding + 7);
+            var textHeight = this.insertText({ text: text, size: size, type: type, align: align, color: color });
+            this.insertLine(this.padding, this.padding + textHeight, this.width - this.padding);
+            return textHeight;
         }
     }, {
         key: 'insertFooter',
-<<<<<<< b6b3ca1279e624605a1633f8a18a0479d9411123
-        value: function insertFooter(_ref2) {
-            var text = _ref2.text,
-                align = _ref2.align,
-                _ref2$color = _ref2.color,
-                color = _ref2$color === undefined ? [0, 0, 0] : _ref2$color,
-                linkText = _ref2.linkText,
-                linkUrl = _ref2.linkUrl;
-=======
-        value: function insertFooter(_ref) {
-            var text = _ref.text,
-                align = _ref.align,
-                _ref$color = _ref.color,
-                color = _ref$color === undefined ? [0, 0, 0] : _ref$color,
-                linkText = _ref.linkText,
-                linkUrl = _ref.linkUrl;
->>>>>>> refactor(pdfCreator): finish "insertText" method, and work on its unit testing
+        value: function insertFooter(_ref3) {
+            var text = _ref3.text,
+                align = _ref3.align,
+                _ref3$color = _ref3.color,
+                color = _ref3$color === undefined ? [0, 0, 0] : _ref3$color,
+                linkText = _ref3.linkText,
+                linkUrl = _ref3.linkUrl;
 
             this.doc.setFontSize(10);
             this.setFontType('normal');
@@ -318,27 +313,15 @@ var PDFCreator = function () {
         }
     }, {
         key: 'insertImage',
-<<<<<<< b6b3ca1279e624605a1633f8a18a0479d9411123
-        value: function insertImage(_ref3) {
+        value: function insertImage(_ref4) {
             var _this = this;
 
-            var imgUrl = _ref3.imgUrl,
-                imgExt = _ref3.imgExt,
-                posX = _ref3.posX,
-                posY = _ref3.posY,
-                width = _ref3.width,
-                height = _ref3.height;
-=======
-        value: function insertImage(_ref2) {
-            var _this = this;
-
-            var imgUrl = _ref2.imgUrl,
-                imgExt = _ref2.imgExt,
-                posX = _ref2.posX,
-                posY = _ref2.posY,
-                width = _ref2.width,
-                height = _ref2.height;
->>>>>>> refactor(pdfCreator): finish "insertText" method, and work on its unit testing
+            var imgUrl = _ref4.imgUrl,
+                imgExt = _ref4.imgExt,
+                posX = _ref4.posX,
+                posY = _ref4.posY,
+                width = _ref4.width,
+                height = _ref4.height;
 
             var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
@@ -358,21 +341,12 @@ var PDFCreator = function () {
         }
     }, {
         key: 'getTextHeight',
-<<<<<<< b6b3ca1279e624605a1633f8a18a0479d9411123
-        value: function getTextHeight(_ref4) {
-            var text = _ref4.text,
-                fontSize = _ref4.fontSize,
-                posX = _ref4.posX,
-                type = _ref4.type,
-                align = _ref4.align;
-=======
-        value: function getTextHeight(_ref3) {
-            var text = _ref3.text,
-                fontSize = _ref3.fontSize,
-                posX = _ref3.posX,
-                type = _ref3.type,
-                align = _ref3.align;
->>>>>>> refactor(pdfCreator): finish "insertText" method, and work on its unit testing
+        value: function getTextHeight(_ref5) {
+            var text = _ref5.text,
+                fontSize = _ref5.fontSize,
+                posX = _ref5.posX,
+                type = _ref5.type,
+                align = _ref5.align;
 
             this.setFontSize(fontSize);
             type && this.setFontType(type);
@@ -383,15 +357,9 @@ var PDFCreator = function () {
         }
     }, {
         key: 'addPage',
-<<<<<<< b6b3ca1279e624605a1633f8a18a0479d9411123
-        value: function addPage(_ref5) {
-            var width = _ref5.width,
-                height = _ref5.height;
-=======
-        value: function addPage(_ref4) {
-            var width = _ref4.width,
-                height = _ref4.height;
->>>>>>> refactor(pdfCreator): finish "insertText" method, and work on its unit testing
+        value: function addPage(_ref6) {
+            var width = _ref6.width,
+                height = _ref6.height;
 
             this.doc.addPage(width, height);
         }
