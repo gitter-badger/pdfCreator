@@ -1,3 +1,5 @@
+'use strict';
+
 const istanbul = require('browserify-istanbul');
 const parseArgs = require('minimist');
 
@@ -39,8 +41,11 @@ module.exports = config => {
         },
 
         coverageReporter: {
-            type : args.cover ? 'lcov' : 'text',
-            subdir: '.',
+            reporters: [
+                { type: 'html', subdir: 'report-html' },
+                { type: 'text', subdir: '.' },
+                { type: 'lcov', subdir: '.' }
+            ],
             dir: 'coverage/'
         },
 

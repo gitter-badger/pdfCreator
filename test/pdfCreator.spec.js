@@ -159,13 +159,11 @@ describe('pdfCreator', () => {
             });
 
             it('should log error if the text is not string', () => {
-                pdf.insertText({
-                    text: 2555
-                });
+                pdf.insertText({text: 2555});
                 expect(console.error).toHaveBeenCalledWith('Text should be a string');
             });
 
-            it('should set reqired text adjustments before inserting the text', () => {
+            it('should set required text adjustments before inserting the text', () => {
                 pdf.insertText({
                     text: 'my test text',
                     size: 16,
@@ -185,6 +183,56 @@ describe('pdfCreator', () => {
                     maxAllowedHeight: 50
                 });
                 expect(result).toBe(false);
+            });
+
+            it('should return the inserted text height if the given text not exceeds the max allowed-height', () => {
+                const result = pdf.insertText({
+                    text: 'my test text is here, and it should be splitted into multi-lines array',
+                    size: 160,
+                    type: 'bold',
+                    maxAllowedHeight: 500
+                });
+                expect(result).toEqual(jasmine.any(Number));
+            });
+        });
+
+        describe('method: insertLine', () => {
+            beforeEach(() => {
+                spyOn(doc, 'line').and.callThrough();
+            });
+
+            it('should doc methos line with the correct arguments', () => {
+                pdf.insertLine(20, 50, 80, 50);
+                expect(doc.line).toHaveBeenCalledWith(20, 50, 80, 50);
+            });
+
+            it('should set "y2" equal "y1" if it is missing', () => {
+                pdf.insertLine(20, 77, 80);
+                expect(doc.line).toHaveBeenCalledWith(20, 77, 80, 77);
+            });
+        });
+
+        describe('method: insertHeader', () => {
+            beforeEach(() => {
+                spyOn(pdf, 'insertText').and.callThrough();
+                spyOn(pdf, 'insertLine').and.callThrough();
+            });
+
+            it('should insert the header text and return its height', () => {
+                const result = pdf.insertHeader({
+                    text: 'my test text is here, and it should be splitted into multi-lines array',
+                    size: 16,
+                    type: 'bold'
+                });
+                expect(pdf.insertText).toHaveBeenCalled();
+                expect(result).toEqual(jasmine.any(Number));
+            });
+
+            it('should call insertLine method', () => {
+                pdf.insertHeader({
+                    text: 'my test text is here'
+                });
+                expect(pdf.insertLine).toHaveBeenCalled();
             });
         });
     });
