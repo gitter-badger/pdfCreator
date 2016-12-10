@@ -40,11 +40,11 @@ module.exports = config => {
         browserify: {
             debug: true,
             transform: [
-                ['babelify', {presets: ['es2015']}],
                 istanbul({
                     instrumenter: isparta,
                     ignore: ['**/node_modules/**', '**/*.spec.js']
-                })
+                }),
+                ['babelify', {presets: ['es2015']}]
             ]
         },
 
