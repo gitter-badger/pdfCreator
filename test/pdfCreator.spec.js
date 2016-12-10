@@ -1,4 +1,7 @@
+'use strict';
+
 import PDFCreator from '../lib/pdfCreator';
+import Image from '../lib/mocks/image';
 
 describe('pdfCreator', () => {
     describe('method: addLayout', () => {
@@ -233,6 +236,17 @@ describe('pdfCreator', () => {
                     text: 'my test text is here'
                 });
                 expect(pdf.insertLine).toHaveBeenCalled();
+            });
+        });
+
+        describe('method: toDataUrl', () => {
+            beforeEach(() => {
+                spyOn(document, 'createElement').and.callThrough();
+            });
+
+            it('should create new image instance', () => {
+                // pdf.toDataUrl();
+                // console.log('mock:', Image)
             });
         });
     });

@@ -227,10 +227,10 @@ var PDFCreator = function () {
 
         /**
          * Insert line into the document with the given (x1, y1, x2, y2) coordinates
-         * @param  {number} x1 - Horizonal starting point
-         * @param  {number} y1 - Vertical starting point
-         * @param  {number} x2 - Horizonal ending point
-         * @param  {number} y2 - Vertical ending point
+         * @param {number} x1 - Horizonal starting point
+         * @param {number} y1 - Vertical starting point
+         * @param {number} x2 - Horizonal ending point
+         * @param {number} y2 - Vertical ending point
          * @memberOf PDFCreator.prototype
          */
 
@@ -248,11 +248,11 @@ var PDFCreator = function () {
 
         /**
          * Insert header into the document
-         * @param  {string} options.text             - Text to be inserted
-         * @param  {number} options.size             - Font size
-         * @param  {number} options.type             - Font type
-         * @param  {string} options.align            - Text alignment
-         * @param  {array|string} options.color      - Text color
+         * @param {string} options.text             - Text to be inserted
+         * @param {number} options.size             - Font size
+         * @param {number} options.type             - Font type
+         * @param {string} options.align            - Text alignment
+         * @param {array|string} options.color      - Text color
          */
 
     }, {
@@ -289,17 +289,33 @@ var PDFCreator = function () {
                 this.doc.textWithLink(linkText, this.padding + this.doc.getTextWidth(text) + 2, this.height - this.padding, { url: linkUrl });
             }
         }
+
+        /**
+         * The step before inserting the image into the document, it loads the image then converts it to data url,
+         * so we can insert the image into the pdf document
+         * @param {string}   options.url          - Absolute or relative image url
+         * @param {Function} options.callback     - Converting callback function
+         * @param {string}   options.outputFormat - Output image format
+         * @param {Image}    options.Image        - Image Element constructor
+         */
+
     }, {
         key: 'toDataUrl',
-        value: function toDataUrl(url, callback, outputFormat) {
+        value: function toDataUrl(_ref4) {
+            var url = _ref4.url,
+                callback = _ref4.callback,
+                outputFormat = _ref4.outputFormat,
+                _ref4$Image = _ref4.Image,
+                Image = _ref4$Image === undefined ? Image : _ref4$Image;
+
             var img = new Image();
 
             img.crossOrigin = 'Anonymous';
 
             img.onload = function () {
-                var canvas = document.createElement('CANVAS'),
-                    ctx = canvas.getContext('2d'),
-                    dataURL = void 0;
+                var canvas = document.createElement('CANVAS');
+                var ctx = canvas.getContext('2d');
+                var dataURL = void 0;
 
                 canvas.height = img.height;
                 canvas.width = img.width;
@@ -313,15 +329,15 @@ var PDFCreator = function () {
         }
     }, {
         key: 'insertImage',
-        value: function insertImage(_ref4) {
+        value: function insertImage(_ref5) {
             var _this = this;
 
-            var imgUrl = _ref4.imgUrl,
-                imgExt = _ref4.imgExt,
-                posX = _ref4.posX,
-                posY = _ref4.posY,
-                width = _ref4.width,
-                height = _ref4.height;
+            var imgUrl = _ref5.imgUrl,
+                imgExt = _ref5.imgExt,
+                posX = _ref5.posX,
+                posY = _ref5.posY,
+                width = _ref5.width,
+                height = _ref5.height;
 
             var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
@@ -341,12 +357,12 @@ var PDFCreator = function () {
         }
     }, {
         key: 'getTextHeight',
-        value: function getTextHeight(_ref5) {
-            var text = _ref5.text,
-                fontSize = _ref5.fontSize,
-                posX = _ref5.posX,
-                type = _ref5.type,
-                align = _ref5.align;
+        value: function getTextHeight(_ref6) {
+            var text = _ref6.text,
+                fontSize = _ref6.fontSize,
+                posX = _ref6.posX,
+                type = _ref6.type,
+                align = _ref6.align;
 
             this.setFontSize(fontSize);
             type && this.setFontType(type);
@@ -357,9 +373,9 @@ var PDFCreator = function () {
         }
     }, {
         key: 'addPage',
-        value: function addPage(_ref6) {
-            var width = _ref6.width,
-                height = _ref6.height;
+        value: function addPage(_ref7) {
+            var width = _ref7.width,
+                height = _ref7.height;
 
             this.doc.addPage(width, height);
         }
