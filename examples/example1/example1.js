@@ -1,8 +1,7 @@
 (function () {
     'use strict';
 
-    const PDF = require('../../dist/pdfcreator'),
-        pdfDoc = new PDF(595.28, 841.89, 595.28 * 0.05, 'pt');
+    const pdfDoc = new PDFCreator(595.28, 841.89, 595.28 * 0.05, 'pt');
 
     // Add cover page
     pdfDoc.add('cover', {
@@ -15,10 +14,10 @@
 
     // Add new page
     pdfDoc.addPage({
-        width: pdfDoc.width, 
+        width: pdfDoc.width,
         height: pdfDoc.height
     });
-    
+
     // Insert page header
     pdfDoc.insertHeader({
         text:'Socialbakers Export'
@@ -57,10 +56,10 @@
 
     // Add new page
     pdfDoc.addPage({
-        width: pdfDoc.width, 
+        width: pdfDoc.width,
         height: pdfDoc.height
     });
-    
+
     // Insert page header
     pdfDoc.insertHeader({
         text:'Socialbakers Export'

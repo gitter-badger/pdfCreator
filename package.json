@@ -13,7 +13,7 @@
   "author": "Muhammad Aref <muh.aref@live.com>",
   "license": "MIT",
   "main": [
-    "dist/index.js"
+    "lib/index.js"
   ],
   "devDependencies": {
     "babel-polyfill": "^6.16.0",

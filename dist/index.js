@@ -9,11 +9,78 @@ var _pdfCreator = require('./pdfCreator');
 
 var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
 
+require('./layouts/cover');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _pdfCreator2.default;
 
-},{"./pdfCreator":2}],2:[function(require,module,exports){
+},{"./layouts/cover":2,"./pdfCreator":3}],2:[function(require,module,exports){
+'use strict';
+
+var _pdfCreator = require('../pdfCreator');
+
+var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_pdfCreator2.default.addLayout('cover', function (data) {
+    var width = undefined.width,
+        height = undefined.height,
+        padding = undefined.padding;
+    var topImgUrl = data.topImgUrl,
+        _data$topImgExt = data.topImgExt,
+        topImgExt = _data$topImgExt === undefined ? 'PNG' : _data$topImgExt,
+        title = data.title,
+        subTitle = data.subTitle,
+        subSubTitle = data.subSubTitle,
+        bottomImgUrl = data.bottomImgUrl,
+        _data$bottomImgExt = data.bottomImgExt,
+        bottomImgExt = _data$bottomImgExt === undefined ? 'PNG' : _data$bottomImgExt;
+
+
+    undefined.insertImage({
+        imgUrl: topImgUrl,
+        imgExt: topImgExt,
+        posX: 'center',
+        posY: height / 4,
+        width: width / 3
+    });
+
+    undefined.insertText({
+        text: title,
+        fontSize: 25,
+        posX: width / 2,
+        posY: height / 3 + 125,
+        align: 'center'
+    });
+
+    undefined.insertText({
+        text: subTitle,
+        fontSize: 14,
+        posX: width / 2,
+        posY: height / 3 + 160,
+        align: 'center'
+    });
+
+    undefined.insertText({
+        text: subSubTitle,
+        fontSize: 11,
+        posX: width / 2,
+        posY: height / 3 + 180,
+        align: 'center'
+    });
+
+    undefined.insertImage({
+        imgUrl: bottomImgUrl,
+        imgExt: bottomImgExt,
+        posX: padding + 50,
+        posY: 3 * height / 4,
+        width: 90
+    });
+});
+
+},{"../pdfCreator":3}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -500,7 +567,7 @@ exports.default = PDFCreator;
 
 if (window) window.PDFCreator = PDFCreator;
 
-},{"jspdf":3}],3:[function(require,module,exports){
+},{"jspdf":4}],4:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
