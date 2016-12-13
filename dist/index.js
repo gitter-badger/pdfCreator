@@ -253,6 +253,7 @@ var PDFCreator = function () {
          * @param {number} options.type             - Font type
          * @param {string} options.align            - Text alignment
          * @param {array|string} options.color      - Text color
+         * @memberOf PDFCreator.prototype
          */
 
     }, {
@@ -293,10 +294,12 @@ var PDFCreator = function () {
         /**
          * The step before inserting the image into the document, it loads the image then converts it to data url,
          * so we can insert the image into the pdf document
-         * @param {string}   options.url          - Absolute or relative image url
-         * @param {Function} options.callback     - Converting callback function
-         * @param {string}   options.outputFormat - Output image format
-         * @param {Image}    options.Image        - Image Element constructor
+         * @param  {string}  options.url          - Absolute or relative image url
+         * @param  {Function} options.callback    - Converting callback function
+         * @param  {string}  options.outputFormat - Output image format
+         * @param  {Image}   [options.Image       - Image Element constructor
+         * @return {Image}                        - Created image instance
+         * @memberOf PDFCreator.prototype
          */
 
     }, {
@@ -326,7 +329,22 @@ var PDFCreator = function () {
             };
 
             img.src = url;
+
+            // Mainly for testing
+            return img;
         }
+
+        /**
+         * Insert an image in the document with taking the image url
+         * @param {string} options.imgUrl      - Image url
+         * @param {string} [options.imgExt]    - Image extension
+         * @param {number|string} options.posX - Left image offset
+         * @param {number} options.posY        - Right image offset
+         * @param {number} [options.width]     - Optional image width or it takes the actual width
+         * @param {number} [options.height]    - Optional image height or it takes the actual height
+         * @memberOf PDFCreator.prototype
+         */
+
     }, {
         key: 'insertImage',
         value: function insertImage(_ref5) {
@@ -342,43 +360,62 @@ var PDFCreator = function () {
             var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
 
             this.toDataUrl(imgUrl, function (base64Img, imgWidth, imgHeight) {
-                var ratio = imgHeight / imgWidth;
-
                 imgWidth = width || imgWidth;
-                imgHeight = height || imgWidth * ratio;
+                imgHeight = height || imgHeight;
 
                 if (posX === 'center') {
                     posX = (_this.width - imgWidth) / 2;
                 }
 
-                _this.doc.setPage(crtPageNumber);
+                _this.doc.setPage(crtPageNumber); // why I need to call setPage?!!!
                 _this.doc.addImage(base64Img, imgExt, posX, posY, imgWidth, imgHeight);
             });
         }
+
+        /**
+         * Get the height of the given text after splitting it into lines without inseting in
+         * into the document, useful to measure the text height before inserting it
+         * @param  {string} options.text    - Text to be splitted and measured
+         * @param  {number} options.size    - Font size
+         * @param  {number} options.posX    - Text left position
+         * @param  {string} [options.type]  - Font type
+         * @param  {string} [options.align] - Text alignment
+         * @return {number}                 - Final text height after splitting
+         */
+
     }, {
         key: 'getTextHeight',
         value: function getTextHeight(_ref6) {
             var text = _ref6.text,
-                fontSize = _ref6.fontSize,
+                size = _ref6.size,
                 posX = _ref6.posX,
                 type = _ref6.type,
                 align = _ref6.align;
 
-            this.setFontSize(fontSize);
+            this.setFontSize(size);
             type && this.setFontType(type);
 
             var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
 
             return this.doc.internal.getLineHeight() * splittedText.length;
         }
+
+        /**
+         * Add new page to the current document with the same width/height
+         * @memberOf PDFCreator.prototype
+         */
+
     }, {
         key: 'addPage',
-        value: function addPage(_ref7) {
-            var width = _ref7.width,
-                height = _ref7.height;
-
-            this.doc.addPage(width, height);
+        value: function addPage() {
+            this.doc.addPage(this.width, this.height);
         }
+
+        /**
+         * Get the current page info
+         * @return {object} - Page info
+         */
+
     }, {
         key: 'getPageInfo',
         value: function getPageInfo() {
@@ -393,6 +430,13 @@ var PDFCreator = function () {
             //     console.error(error.message);
             // }
         }
+
+        /**
+         * Save the generated pdf document
+         * @param {string} [fileName] - Pdf file name
+         * @memberOf PDFCreator.prototype
+         */
+
     }, {
         key: 'save',
         value: function save(fileName) {

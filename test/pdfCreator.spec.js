@@ -2,6 +2,7 @@
 
 import PDFCreator from '../lib/pdfCreator';
 import Image from '../lib/mocks/image';
+import Canvas from '../lib/mocks/canvas';
 
 describe('pdfCreator', () => {
     describe('method: addLayout', () => {
@@ -240,14 +241,41 @@ describe('pdfCreator', () => {
         });
 
         describe('method: toDataUrl', () => {
+            let img;
+            const dataUrl = 'data-url';
+            const canvas = new Canvas(dataUrl);
+            const url = './images/logo.png';
+            const callback = jasmine.createSpy('callback');
             beforeEach(() => {
-                spyOn(document, 'createElement').and.callThrough();
+                img = pdf.toDataUrl({
+                    url,
+                    Image,
+                    callback
+                });
+                spyOn(document, 'createElement').and.callFake(() => canvas);
             });
 
-            it('should create new image instance', () => {
-                // pdf.toDataUrl();
-                // console.log('mock:', Image)
+            it('should create new image instance and set the required attrs', () => {
+                expect(img.src).toEqual(url);
+                expect(img.crossOrigin).toEqual('Anonymous');
             });
+
+            it('should create canvas element on load and set its width and height', () => {
+                img.width = 400;
+                img.height = 600;
+                img.onload();
+
+                expect(canvas instanceof Canvas).toBe(true);
+                expect(document.createElement.calls.count()).toBe(1);
+                expect(document.createElement).toHaveBeenCalledWith('CANVAS');
+                expect(canvas.width).toBe(img.width);
+                expect(canvas.height).toBe(img.height);
+                expect(callback).toHaveBeenCalledWith(dataUrl, img.width, img.height);
+            });
+        });
+
+        describe('method: insertImage', () => {
+
         });
     });
 });
