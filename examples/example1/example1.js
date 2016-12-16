@@ -1,4 +1,4 @@
-(function () {
+(() => {
     'use strict';
 
     const pdfDoc = new PDFCreator(595.28, 841.89, 595.28 * 0.05, 'pt');
@@ -9,8 +9,12 @@
         title: 'Souq.com Page Likes Campaign',
         subTitle: '1st December 2015 - 3rd February 2016',
         subSubTitle: 'Page likes campaign with target: 15000',
-        bottomImgUrl: 'logo2.png'
+        bottomImgUrl: 'logo2.png',
+        footerText: 'Whenever you want to be the footer text',
+        footerAlign: 'center'
     });
+
+    /*
 
     // Add new page
     pdfDoc.addPage({
@@ -151,6 +155,8 @@
             }
         ]
     });
+
+    */
 
     document.getElementById('save').onclick = pdfDoc.save.bind(pdfDoc, null);
 })();
