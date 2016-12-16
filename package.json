@@ -5,9 +5,8 @@
   "scripts": {
     "start": "gulp",
     "test": "karma start",
-    "ci": "gulp lint --ci",
-    "cover": "karma start --cover",
-    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+    "ci": "gulp lint --ci && karma start --ci -- --report lcovonly",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": "https://github.com/LeoAref/pdfCreator.js",
   "author": "Muhammad Aref <muh.aref@live.com>",

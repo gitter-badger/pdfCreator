@@ -24,7 +24,7 @@ describe('pdfCreator', () => {
             PDFCreator.addLayout('footer', () => {});
             PDFCreator.addLayout('footer', () => {});
             expect(console.error)
-                .toHaveBeenCalledWith('You can not overwrite layout, this layout "footer" exists');
+                .toHaveBeenCalledWith('You can not overwrite layout, this layout "footer" already exists');
         });
     });
 
@@ -192,7 +192,7 @@ describe('pdfCreator', () => {
             it('should return the inserted text height if the given text not exceeds the max allowed-height', () => {
                 const result = pdf.insertText({
                     text: 'my test text is here, and it should be splitted into multi-lines array',
-                    size: 160,
+                    size: 16,
                     type: 'bold',
                     maxAllowedHeight: 500
                 });
@@ -249,7 +249,7 @@ describe('pdfCreator', () => {
             beforeEach(() => {
                 img = pdf.toDataUrl({
                     url,
-                    Image,
+                    _Image: Image,
                     callback
                 });
                 spyOn(document, 'createElement').and.callFake(() => canvas);

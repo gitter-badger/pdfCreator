@@ -48,8 +48,8 @@ module.exports = config => {
             ]
         },
 
-        autoWatch: !args.cover,
+        autoWatch: !args.ci,
 
-        singleRun: args.cover
+        singleRun: args.ci
     });
 };

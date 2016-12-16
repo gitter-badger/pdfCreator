@@ -24,10 +24,10 @@ var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_pdfCreator2.default.addLayout('cover', function (data) {
-    var width = undefined.width,
-        height = undefined.height,
-        padding = undefined.padding;
+_pdfCreator2.default.addLayout('cover', function (pdf, data) {
+    var width = pdf.width,
+        height = pdf.height,
+        padding = pdf.padding;
     var topImgUrl = data.topImgUrl,
         _data$topImgExt = data.topImgExt,
         topImgExt = _data$topImgExt === undefined ? 'PNG' : _data$topImgExt,
@@ -36,46 +36,54 @@ _pdfCreator2.default.addLayout('cover', function (data) {
         subSubTitle = data.subSubTitle,
         bottomImgUrl = data.bottomImgUrl,
         _data$bottomImgExt = data.bottomImgExt,
-        bottomImgExt = _data$bottomImgExt === undefined ? 'PNG' : _data$bottomImgExt;
+        bottomImgExt = _data$bottomImgExt === undefined ? 'PNG' : _data$bottomImgExt,
+        footerText = data.footerText,
+        _data$footerAlign = data.footerAlign,
+        footerAlign = _data$footerAlign === undefined ? 'center' : _data$footerAlign;
 
 
-    undefined.insertImage({
-        imgUrl: topImgUrl,
-        imgExt: topImgExt,
-        posX: 'center',
-        posY: height / 4,
+    pdf.insertImage({
+        url: topImgUrl,
+        ext: topImgExt,
+        x: 'center',
+        y: height / 4,
         width: width / 3
     });
 
-    undefined.insertText({
+    pdf.insertText({
         text: title,
-        fontSize: 25,
-        posX: width / 2,
-        posY: height / 3 + 125,
+        size: 25,
+        y: height / 3 + 125,
         align: 'center'
     });
 
-    undefined.insertText({
+    pdf.insertText({
         text: subTitle,
-        fontSize: 14,
-        posX: width / 2,
-        posY: height / 3 + 160,
+        size: 14,
+        y: height / 3 + 160,
         align: 'center'
     });
 
-    undefined.insertText({
+    pdf.insertText({
         text: subSubTitle,
-        fontSize: 11,
-        posX: width / 2,
-        posY: height / 3 + 180,
+        size: 11,
+        y: height / 3 + 180,
         align: 'center'
     });
 
-    undefined.insertImage({
-        imgUrl: bottomImgUrl,
-        imgExt: bottomImgExt,
-        posX: padding + 50,
-        posY: 3 * height / 4,
+    pdf.insertText({
+        text: footerText,
+        size: 10,
+        x: footerAlign === 'center' ? null : width - padding,
+        y: height - padding,
+        align: footerAlign
+    });
+
+    pdf.insertImage({
+        url: bottomImgUrl,
+        ext: bottomImgExt,
+        x: padding + 50,
+        y: 3 * height / 4,
         width: 90
     });
 });
@@ -166,8 +174,8 @@ var PDFCreator = function () {
     /**
      * Add layout to the list of layouts, this method allow is also used to add
      * custom layouts
-     * @param {string} name        - Layout name, should be unique
-     * @param {function} procedure - Layout procedure
+     * @param {string} name                   - Layout name, should be unique
+     * @param {function(pdf, data)} procedure - Layout procedure
      * @memberOf PDFCreator
      */
 
@@ -250,7 +258,8 @@ var PDFCreator = function () {
             var text = _ref.text,
                 size = _ref.size,
                 type = _ref.type,
-                x = _ref.x,
+                _ref$x = _ref.x,
+                x = _ref$x === undefined ? 0 : _ref$x,
                 y = _ref.y,
                 _ref$align = _ref.align,
                 align = _ref$align === undefined ? '' : _ref$align,
@@ -263,9 +272,17 @@ var PDFCreator = function () {
             }
 
             // If the alignment is center, so we need to set x position as document
-            // padding/2, to be centered correctly
+            // width/2, to be centered correctly
             if (align === 'center') {
-                x = this.padding / 2;
+                x = this.width / 2;
+            }
+
+            // If the alignment is right, so we need to set x position as the given
+            // x position minus the text width
+            // FIXME: see how to use align-right directly
+            if (align === 'right') {
+                align = null;
+                x -= this.getTextWidth(text, size);
             }
 
             // Reqired text adjustments before inserting the text
@@ -336,6 +353,9 @@ var PDFCreator = function () {
             this.insertLine(this.padding, this.padding + textHeight, this.width - this.padding);
             return textHeight;
         }
+
+        // FIXME: needs cleaning and testing
+
     }, {
         key: 'insertFooter',
         value: function insertFooter(_ref3) {
@@ -364,7 +384,7 @@ var PDFCreator = function () {
          * @param  {string}  options.url          - Absolute or relative image url
          * @param  {Function} options.callback    - Converting callback function
          * @param  {string}  options.outputFormat - Output image format
-         * @param  {Image}   [options.Image       - Image Element constructor
+         * @param  {_Image}   [options.Image]     - Image Element constructor
          * @return {Image}                        - Created image instance
          * @memberOf PDFCreator.prototype
          */
@@ -375,10 +395,10 @@ var PDFCreator = function () {
             var url = _ref4.url,
                 callback = _ref4.callback,
                 outputFormat = _ref4.outputFormat,
-                _ref4$Image = _ref4.Image,
-                Image = _ref4$Image === undefined ? Image : _ref4$Image;
+                _ref4$_Image = _ref4._Image,
+                _Image = _ref4$_Image === undefined ? Image : _ref4$_Image;
 
-            var img = new Image();
+            var img = new _Image();
 
             img.crossOrigin = 'Anonymous';
 
@@ -403,12 +423,12 @@ var PDFCreator = function () {
 
         /**
          * Insert an image in the document with taking the image url
-         * @param {string} options.imgUrl      - Image url
-         * @param {string} [options.imgExt]    - Image extension
-         * @param {number|string} options.posX - Left image offset
-         * @param {number} options.posY        - Right image offset
-         * @param {number} [options.width]     - Optional image width or it takes the actual width
-         * @param {number} [options.height]    - Optional image height or it takes the actual height
+         * @param {string} options.url      - Image url
+         * @param {string} [options.ext]    - Image extension
+         * @param {number|string} options.x - Left image offset
+         * @param {number} options.y        - Right image offset
+         * @param {number} [options.width]  - Optional image width or it takes the actual width
+         * @param {number} [options.height] - Optional image height or it takes the actual height
          * @memberOf PDFCreator.prototype
          */
 
@@ -417,25 +437,31 @@ var PDFCreator = function () {
         value: function insertImage(_ref5) {
             var _this = this;
 
-            var imgUrl = _ref5.imgUrl,
-                imgExt = _ref5.imgExt,
-                posX = _ref5.posX,
-                posY = _ref5.posY,
+            var url = _ref5.url,
+                ext = _ref5.ext,
+                x = _ref5.x,
+                y = _ref5.y,
                 width = _ref5.width,
                 height = _ref5.height;
 
             var crtPageNumber = this.doc.internal.getCurrentPageInfo().pageNumber;
+            var callback = function callback(base64Img, imgWidth, imgHeight) {
+                var ratio = imgWidth / imgHeight;
 
-            this.toDataUrl(imgUrl, function (base64Img, imgWidth, imgHeight) {
                 imgWidth = width || imgWidth;
-                imgHeight = height || imgHeight;
+                imgHeight = height || imgWidth / ratio;
 
-                if (posX === 'center') {
-                    posX = (_this.width - imgWidth) / 2;
+                if (x === 'center') {
+                    x = (_this.width - imgWidth) / 2;
                 }
 
                 _this.doc.setPage(crtPageNumber); // why I need to call setPage?!!!
-                _this.doc.addImage(base64Img, imgExt, posX, posY, imgWidth, imgHeight);
+                _this.doc.addImage(base64Img, ext, x, y, imgWidth, imgHeight);
+            };
+
+            this.toDataUrl({
+                url: url,
+                callback: callback
             });
         }
 
@@ -448,6 +474,7 @@ var PDFCreator = function () {
          * @param  {string} [options.type]  - Font type
          * @param  {string} [options.align] - Text alignment
          * @return {number}                 - Final text height after splitting
+         * @memberOf PDFCreator.prototype
          */
 
     }, {
@@ -468,6 +495,21 @@ var PDFCreator = function () {
         }
 
         /**
+         * Get the width of the text according to the given font size
+         * @param  {string} text   - Text to get the width of
+         * @param  {number} [size] - Font size, if not provided it will according to the current doc font-size
+         * @return {number}        - Text width
+         * @memberOf PDFCreator.prototype
+         */
+
+    }, {
+        key: 'getTextWidth',
+        value: function getTextWidth(text, size) {
+            size && this.setFontSize(size);
+            return this.doc.getTextWidth(text);
+        }
+
+        /**
          * Add new page to the current document with the same width/height
          * @memberOf PDFCreator.prototype
          */
@@ -481,21 +523,13 @@ var PDFCreator = function () {
         /**
          * Get the current page info
          * @return {object} - Page info
+         * @memberOf PDFCreator.prototype
          */
 
     }, {
         key: 'getPageInfo',
         value: function getPageInfo() {
             return this.doc.internal.getCurrentPageInfo();
-        }
-    }, {
-        key: 'add',
-        value: function add(layout, data) {
-            PDFCreator.layouts[layout].call(this, data);
-            // try {
-            // } catch (error) {
-            //     console.error(error.message);
-            // }
         }
 
         /**
@@ -509,6 +543,19 @@ var PDFCreator = function () {
         value: function save(fileName) {
             this.doc.save(fileName || Date.now());
         }
+
+        /**
+         * Shortcut method for add a whole layout (i.e. component) using one command
+         * @param {string} layout - Layout name
+         * @param {*} data        - The data that the layout procedure is waiting for
+         * @memberOf PDFCreator.prototype
+         */
+
+    }, {
+        key: 'add',
+        value: function add(layout, data) {
+            Layouts[layout](this, data);
+        }
     }], [{
         key: 'addLayout',
         value: function addLayout(name, procedure) {
@@ -516,7 +563,7 @@ var PDFCreator = function () {
 
             if (typeof procedure !== 'function') return console.error('Layout procedure should be a function');
 
-            if (Layouts[name]) return console.error('You can not overwrite layout, this layout "' + name + '" exists');
+            if (Layouts[name]) return console.error('You can not overwrite layout, this layout "' + name + '" already exists');
 
             Layouts[name] = procedure;
         }
@@ -1857,11 +1904,15 @@ if (window) window.PDFCreator = PDFCreator;
                           // the center point.
                           left = x - maxLineLength / 2;
                           x -= lineWidths[0] / 2;
+
                       } else if (align === "right") {
                           // The passed in x coordinate defines the
                           // rightmost point of the text.
                           left = x - maxLineLength;
                           x -= lineWidths[0];
+
+                          console.log('-------')
+                          console.log(left, x, this.width)
                       } else {
                           throw new Error('Unrecognized alignment option, use "center" or "right".');
                       }
@@ -4416,7 +4467,7 @@ Q\n";
    *               2014 Diego Casorran, https://github.com/diegocr
    *               2014 James Robb, https://github.com/jamesbrobb
    *
-   * 
+   *
    */
 
   ;(function (jsPDFAPI) {
@@ -5417,7 +5468,7 @@ Q\n";
 
   /**
    * This plugin mimics the HTML5 Canvas
-   * 
+   *
    * The goal is to provide a way for current canvas users to print directly to a PDF.
    */
 
@@ -5468,7 +5519,7 @@ Q\n";
    *               2014 James Hall, james@parall.ax
    *               2014 Diego Casorran, https://github.com/diegocr
    *
-   * 
+   *
    * ====================================================================
    */
 
@@ -7377,7 +7428,7 @@ Q\n";
    *               2014 Wolfgang Gassler, https://github.com/woolfg
    *               2014 Steven Spungin, https://github.com/flamenco
    *
-   * 
+   *
    * ====================================================================
    */
 
@@ -8347,11 +8398,11 @@ Q\n";
   	};
   })(jsPDF.API);
 
-  /** ==================================================================== 
+  /** ====================================================================
    * jsPDF JavaScript plugin
    * Copyright (c) 2013 Youssef Beddad, youssef.beddad@gmail.com
-   * 
-   * 
+   *
+   *
    * ====================================================================
    */
 
@@ -8410,7 +8461,7 @@ Q\n";
   		// pdf.internal.write("(page_" + (i + 1) + ")" + dests[i] + " 0
   		// R");
   		// }
-  		//				
+  		//
   		if (this.outline.root.children.length > 0) {
   			var lines = pdf.outline.render().split(/\r\n/);
   			for (var i = 0; i < lines.length; i++) {
@@ -8619,7 +8670,7 @@ Q\n";
    * jsPDF PNG PlugIn
    * Copyright (c) 2014 James Robb, https://github.com/jamesbrobb
    *
-   * 
+   *
    * ====================================================================
    */
 
@@ -9157,7 +9208,7 @@ Q\n";
    *               2014 Diego Casorran, https://github.com/diegocr
    */
   /**
-   * 
+   *
    * ====================================================================
    */
 
@@ -9167,7 +9218,7 @@ Q\n";
   	/**
    Returns an array of length matching length of the 'word' string, with each
    cell ocupied by the width of the char in that position.
-   
+
    @function
    @param word {String}
    @param widths {Object}
@@ -9215,13 +9266,13 @@ Q\n";
   	};
   	/**
    Returns a widths of string in a given font, if the font size is set as 1 point.
-   
+
    In other words, this is "proportional" value. For 1 unit of font size, the length
    of the string will be that much.
-   
+
    Multiply by font size to get actual width in *points*
    Then divide by 72 to get inches or divide by (72/25.6) to get 'mm' etc.
-   
+
    @public
    @function
    @param
@@ -9371,10 +9422,10 @@ Q\n";
    (in measurement units declared as default for the jsPDF instance)
    and the font's "widths" and "Kerning" tables, where available, to
    determine display length of a given string for a given font.
-   
+
    We use character's 100% of unit size (height) as width when Width
    table or other default width is not available.
-   
+
    @public
    @function
    @param text {String} Unencoded, regular JavaScript (Unicode, UTF-16 / UCS-2) string.
@@ -9455,13 +9506,13 @@ Q\n";
   	};
   })(jsPDF.API);
 
-  /** @preserve 
+  /** @preserve
   jsPDF standard_fonts_metrics plugin
   Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
   MIT license.
   */
   /**
-   * 
+   *
    * ====================================================================
    */
 
@@ -9473,9 +9524,9 @@ Q\n";
    # only 'uncompress' function is featured lower as JavaScript
    # if you want to unit test "roundtrip", just transcribe the reference
    # 'compress' function from Python into JavaScript
-   
+
    def compress(data):
-   
+
    	keys =   '0123456789abcdef'
    	values = 'klmnopqrstuvwxyz'
    	mapping = dict(zip(keys, values))
@@ -9488,7 +9539,7 @@ Q\n";
    		except:
    			keystring = key.join(["'","'"])
    			#print('Keystring is %s' % keystring)
-   
+
    		try:
    			if value < 0:
    				valuestring = hex(value)[3:]
@@ -9502,41 +9553,41 @@ Q\n";
    				valuestring = compress(value)
    			else:
    				raise Exception("Don't know what to do with value type %s" % type(value))
-   
+
    		vals.append(keystring+valuestring)
-   	
+
    	return '{' + ''.join(vals) + '}'
-   
+
    def uncompress(data):
-   
+
    	decoded = '0123456789abcdef'
    	encoded = 'klmnopqrstuvwxyz'
    	mapping = dict(zip(encoded, decoded))
-   
+
    	sign = +1
    	stringmode = False
    	stringparts = []
-   
+
    	output = {}
-   
+
    	activeobject = output
    	parentchain = []
-   
+
    	keyparts = ''
    	valueparts = ''
-   
+
    	key = None
-   
+
    	ending = set(encoded)
-   
+
    	i = 1
    	l = len(data) - 1 # stripping starting, ending {}
    	while i != l: # stripping {}
    		# -, {, }, ' are special.
-   
+
    		ch = data[i]
    		i += 1
-   
+
    		if ch == "'":
    			if stringmode:
    				# end of string mode
@@ -9549,7 +9600,7 @@ Q\n";
    		elif stringmode == True:
    			#print("Adding %s to stringpart" % ch)
    			stringparts.append(ch)
-   
+
    		elif ch == '{':
    			# start of object
    			parentchain.append( [activeobject, key] )
@@ -9563,7 +9614,7 @@ Q\n";
    			key = None
    			activeobject = parent
    			#DEBUG = False
-   
+
    		elif ch == '-':
    			sign = -1
    		else:
@@ -9589,15 +9640,15 @@ Q\n";
    					valueparts = ''
    				else:
    					valueparts += ch
-   
+
    			#debug(activeobject)
-   
+
    	return output
-   
+
    */
 
   	/**
-   Uncompresses data compressed into custom, base16-like format. 
+   Uncompresses data compressed into custom, base16-like format.
    @public
    @function
    @param
@@ -9691,7 +9742,7 @@ Q\n";
   		return output;
   	};
 
-  	// encoding = 'Unicode' 
+  	// encoding = 'Unicode'
   	// NOT UTF8, NOT UTF16BE/LE, NOT UCS2BE/LE. NO clever BOM behavior
   	// Actual 16bit char codes used.
   	// no multi-byte logic here
@@ -9700,8 +9751,8 @@ Q\n";
   	// {402: 131, 8211: 150, 8212: 151, 8216: 145, 8217: 146, 8218: 130, 8220: 147, 8221: 148, 8222: 132, 8224: 134, 8225: 135, 8226: 149, 8230: 133, 8364: 128, 8240:137, 8249: 139, 8250: 155, 710: 136, 8482: 153, 338: 140, 339: 156, 732: 152, 352: 138, 353: 154, 376: 159, 381: 142, 382: 158}
   	// as you can see, all Unicode chars are outside of 0-255 range. No char code conflicts.
   	// this means that you can give Win cp1252 encoded strings to jsPDF for rendering directly
-  	// as well as give strings with some (supported by these fonts) Unicode characters and 
-  	// these will be mapped to win cp1252 
+  	// as well as give strings with some (supported by these fonts) Unicode characters and
+  	// these will be mapped to win cp1252
   	// for example, you can send char code (cp1252) 0x80 or (unicode) 0x20AC, getting "Euro" glyph displayed in both cases.
 
   	var encodingBlock = {
@@ -9724,13 +9775,13 @@ Q\n";
   			//	, 'Symbol'
   			//	, 'ZapfDingbats'
   		} }
-  	/** 
+  	/**
    Resources:
    Font metrics data is reprocessed derivative of contents of
    "Font Metrics for PDF Core 14 Fonts" package, which exhibits the following copyright and license:
-   
+
    Copyright (c) 1989, 1990, 1991, 1992, 1993, 1997 Adobe Systems Incorporated. All Rights Reserved.
-   
+
    This file and the 14 PostScript(R) AFM files it accompanies may be used,
    copied, and distributed for any purpose and without charge, with or without
    modification, provided that all copyright notices are retained; that the AFM
@@ -9738,7 +9789,7 @@ Q\n";
    file or any of the AFM files are prominently noted in the modified file(s);
    and that this paragraph is not modified. Adobe Systems has no responsibility
    or obligation to support the use of the AFM files.
-   
+
    */
   	,
   	    fontMetrics = { 'Unicode': {
@@ -9817,7 +9868,7 @@ Q\n";
   Copyright (c) 2012 Willow Systems Corporation, willow-systems.com
   */
   /**
-   * 
+   *
    * ====================================================================
    */
 
@@ -9827,10 +9878,10 @@ Q\n";
   	/**
    Parses SVG XML and converts only some of the SVG elements into
    PDF elements.
-   
+
    Supports:
     paths
-   
+
    @public
    @function
    @param
@@ -9964,11 +10015,11 @@ Q\n";
   	};
   })(jsPDF.API);
 
-  /** ==================================================================== 
+  /** ====================================================================
    * jsPDF total_pages plugin
    * Copyright (c) 2013 Eduardo Menezes de Morais, eduardo.morais@usp.br
-   * 
-   * 
+   *
+   *
    * ====================================================================
    */
 
@@ -9988,11 +10039,11 @@ Q\n";
     };
   })(jsPDF.API);
 
-  /** ==================================================================== 
+  /** ====================================================================
    * jsPDF XMP metadata plugin
    * Copyright (c) 2016 Jussi Utunen, u-jussi@suomi24.fi
-   * 
-   * 
+   *
+   *
    * ====================================================================
    */
 
@@ -10893,8 +10944,8 @@ Q\n";
    1. Redistributions of source code must retain the above copyright notice,
    this list of conditions and the following disclaimer.
 
-   2. Redistributions in binary form must reproduce the above copyright 
-   notice, this list of conditions and the following disclaimer in 
+   2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
    the documentation and/or other materials provided with the distribution.
 
    3. The names of the authors may not be used to endorse or promote products
@@ -12493,7 +12544,7 @@ Q\n";
   		function deflateReset(strm) {
   			strm.total_in = strm.total_out = 0;
   			strm.msg = null; //
-  			
+
   			that.pending = 0;
   			that.pending_out = 0;
 
@@ -12939,7 +12990,7 @@ Q\n";
   		};
   	};
   })(undefined);
-  
+
 
   /*
     html2canvas 0.5.0-beta3 <http://html2canvas.hertzen.com>
@@ -16467,8 +16518,8 @@ Q\n";
   # PNG.js
   # Copyright (c) 2011 Devon Govett
   # MIT LICENSE
-  # 
-  # 
+  #
+  #
   */
 
 
@@ -16931,7 +16982,7 @@ Q\n";
    *               Justin D'Arcangelo <justindarc@gmail.com>
    *               Yury Delendik
    *
-   * 
+   *
    */
 
   var DecodeStream = (function() {
@@ -17120,7 +17171,7 @@ Q\n";
       0x50001, 0x50011, 0x50009, 0x50019, 0x50005, 0x50015, 0x5000d, 0x5001d,
       0x50003, 0x50013, 0x5000b, 0x5001b, 0x50007, 0x50017, 0x5000f, 0x00000
     ]), 5];
-    
+
     function error(e) {
         throw new Error(e)
     }
@@ -17572,5 +17623,6 @@ Q\n";
   return jsPDF;
 
 }));
+
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[1])
