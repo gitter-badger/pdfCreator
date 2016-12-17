@@ -1,5 +1,4 @@
 name: PDFCreator website
 title: title
-description: description
 markdown: kramdown
 theme: jekyll-theme-cayman
