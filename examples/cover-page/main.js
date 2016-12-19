@@ -7,9 +7,9 @@
     // Add cover page with a footer
     pdfDoc.add('cover', {
         topImgUrl: 'logo1.png',
-        title: 'My Facebook Page Likes Campaign',
+        title: 'This is my awesome BIG title',
         subTitle: '1st December 2016 - 3rd February 2017',
-        subSubTitle: 'Page likes campaign with target: 15000',
+        subSubTitle: 'Here there is another place for more details',
         bottomImgUrl: 'logo2.png',
         footerText: 'Whenever you want to be the footer text',
         footerAlign: 'right'

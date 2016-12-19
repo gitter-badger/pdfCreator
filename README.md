@@ -8,7 +8,7 @@ This library is built on top of [jspdf](https://github.com/MrRio/jsPDF) to provi
 ## Quick links
 
 - API documentation
-- Examples
+- [Examples](/examples)
 - Development
 
 ---
