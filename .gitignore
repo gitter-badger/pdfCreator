@@ -3,3 +3,4 @@
 npm-debug.log
 *.pdf
 _site/
+.sass-cache/
