@@ -1,4 +1,133 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PDFAtom = function PDFAtom() {
+  _classCallCheck(this, PDFAtom);
+};
+
+exports.default = PDFAtom;
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _pdfCreator = require('../pdfCreator');
+
+var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
+
+var _atom = require('./atom');
+
+var _atom2 = _interopRequireDefault(_atom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TitleAndParag = function (_PDFAtom) {
+    _inherits(TitleAndParag, _PDFAtom);
+
+    /**
+     * Create new TitleAndParag atom
+     * @param {PDFCreator} options.pdf - PDF creator instance
+     * @param {Object} options.title   - Title
+     * @param {Object} options.parag   - Paragraph
+     * @param {Object} options.margin  - Margin values
+     */
+    function TitleAndParag(_ref) {
+        var pdf = _ref.pdf,
+            _ref$title = _ref.title,
+            title = _ref$title === undefined ? {} : _ref$title,
+            _ref$parag = _ref.parag,
+            parag = _ref$parag === undefined ? {} : _ref$parag,
+            margin = _ref.margin;
+
+        _classCallCheck(this, TitleAndParag);
+
+        var _this = _possibleConstructorReturn(this, (TitleAndParag.__proto__ || Object.getPrototypeOf(TitleAndParag)).call(this));
+
+        _this.pdf = pdf;
+        _this.title = title;
+        _this.parag = parag;
+        _this.margin = Object.assign({ top: 0, inner: 0, bottom: 0 }, margin);
+        return _this;
+    }
+
+    /**
+     * Get the atom height
+     * @return {number} - Atom height
+     */
+
+
+    _createClass(TitleAndParag, [{
+        key: 'insert',
+        value: function insert(y) {
+            y += this.margin.top;
+
+            var titleHeight = this.pdf.insertText({
+                text: this.title.text,
+                size: this.title.size || 15,
+                type: this.title.type || 'bold',
+                x: this.title.x || this.pdf.padding,
+                y: y,
+                color: this.title.color
+            });
+
+            y += titleHeight + this.margin.inner;
+
+            var paragHeight = this.pdf.insertText({
+                text: this.parag.text,
+                size: this.parag.size || 10,
+                type: this.parag.type || 'normal',
+                x: this.parag.x || this.pdf.padding,
+                y: y,
+                color: this.parag.color
+            });
+
+            return titleHeight + paragHeight + this.marginSum;
+        }
+    }, {
+        key: 'height',
+        get: function get() {
+            var titleHeight = this.pdf.getTextHeight({
+                text: this.title.text,
+                size: this.title.size || 15,
+                type: this.title.type || 'bold',
+                x: this.title.x || this.pdf.padding
+            });
+
+            var paragHeight = this.pdf.getTextHeight({
+                text: this.parag.text,
+                size: this.parag.size || 10,
+                type: this.parag.type || 'normal',
+                x: this.parag.x || this.pdf.padding
+            });
+
+            return titleHeight + paragHeight + this.marginSum;
+        }
+    }, {
+        key: 'marginSum',
+        get: function get() {
+            return this.margin.top + this.margin.inner + this.margin.bottom;
+        }
+    }]);
+
+    return TitleAndParag;
+}(_atom2.default);
+
+_pdfCreator2.default.addAtom('TitleAndParag', TitleAndParag);
+
+},{"../pdfCreator":6,"./atom":1}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9,13 +138,20 @@ var _pdfCreator = require('./pdfCreator');
 
 var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
 
+require('./atoms/titleAndParag');
+
 require('./layouts/cover');
+
+require('./layouts/list');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Layouts
 exports.default = _pdfCreator2.default;
 
-},{"./layouts/cover":2,"./pdfCreator":3}],2:[function(require,module,exports){
+// Atoms
+
+},{"./atoms/titleAndParag":2,"./layouts/cover":4,"./layouts/list":5,"./pdfCreator":6}],4:[function(require,module,exports){
 'use strict';
 
 var _pdfCreator = require('../pdfCreator');
@@ -24,7 +160,7 @@ var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_pdfCreator2.default.addLayout('cover', function (pdf, data) {
+var cover = function cover(pdf, data) {
     var width = pdf.width,
         height = pdf.height,
         padding = pdf.padding;
@@ -86,9 +222,59 @@ _pdfCreator2.default.addLayout('cover', function (pdf, data) {
         y: 3 * height / 4,
         width: 90
     });
+};
+
+_pdfCreator2.default.addLayout('cover', cover);
+
+},{"../pdfCreator":6}],5:[function(require,module,exports){
+'use strict';
+
+var _pdfCreator = require('../pdfCreator');
+
+var _pdfCreator2 = _interopRequireDefault(_pdfCreator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_pdfCreator2.default.addLayout('list', function (pdf, data) {
+    var width = pdf.width,
+        height = pdf.height,
+        padding = pdf.padding;
+    var _data$listTitle = data.listTitle,
+        listTitle = _data$listTitle === undefined ? {} : _data$listTitle,
+        _data$listDesc = data.listDesc,
+        listDesc = _data$listDesc === undefined ? {} : _data$listDesc,
+        _data$listItems = data.listItems,
+        listItems = _data$listItems === undefined ? [] : _data$listItems,
+        lineNumbers = data.lineNumbers,
+        _data$pagesLimit = data.pagesLimit,
+        pagesLimit = _data$pagesLimit === undefined ? Infinity : _data$pagesLimit;
+
+    // Track and update posY, after adding each list item
+
+    var posY = padding; // FIXME: add an option to start from the current position
+
+    // Track the added pages, so that we won't add more pages than the pagesLimit
+    var addedPages = 1;
+
+    // Using some so we can break the iteration when the added pages exceed the pagesLimit
+    listItems.some(function (item) {
+        var itemHeight = item.height;
+
+        // Check if there is no more room, then create a new page
+        if (itemHeight > height - padding * 2 - posY) {
+            if (addedPages++ === pagesLimit) return true;
+
+            // Add new page
+            pdf.addPage();
+
+            posY = padding;
+        }
+
+        posY += item.insert(posY);
+    });
 });
 
-},{"../pdfCreator":3}],3:[function(require,module,exports){
+},{"../pdfCreator":6}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -105,6 +291,8 @@ var _jspdf2 = _interopRequireDefault(_jspdf);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -118,14 +306,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 /**
- * Page layout, it can be only the default layouts, or any other custom layouts
- * @type {object}
+ * Page layouts, it can be only the default layouts, or any other custom layouts
+ * @type {Object}
  */
 var Layouts = {};
 
 /**
+ * PDF atom, it can be only the default atoms, or any other custom atoms
+ * @type {object}
+ */
+var Atoms = {};
+
+/**
  * Supported measuring units
- * @type {array}
+ * @type {Array}
  */
 var SUPPORTED_UNITS = ['pt', 'mm', 'cm', 'in', 'px', 'pc', 'em', 'ex'];
 
@@ -144,12 +338,15 @@ var SHORTHAND_HEX_REGEX = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 var PDFCreator = function () {
     /**
      * PDF document
-     * @param {number} width   - Page width
-     * @param {number} height  - Page height
-     * @param {number} padding - Page padding
-     * @param {number} unit    - Default measuring unit
+     * @param {number} width        - Page width
+     * @param {number} height       - Page height
+     * @param {number} padding      - Page padding
+     * @param {number} unit         - Default measuring unit
+     * @param {number} [lineHeight] - Text line-height
      */
     function PDFCreator(width, height, padding, unit) {
+        var lineHeight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1.15;
+
         _classCallCheck(this, PDFCreator);
 
         if (isNaN(Number(width)) || isNaN(Number(height))) {
@@ -168,12 +365,12 @@ var PDFCreator = function () {
         this.height = height;
         this.padding = padding;
         this.unit = unit;
-        this.doc = new _jspdf2.default({ unit: this.unit });
+        this.lineHeight = lineHeight;
+        this.doc = new _jspdf2.default({ unit: unit, lineHeight: lineHeight });
     }
 
     /**
-     * Add layout to the list of layouts, this method allow is also used to add
-     * custom layouts
+     * Add layout to the list of layouts, this method is used also to add custom layouts
      * @param {string} name                   - Layout name, should be unique
      * @param {function(pdf, data)} procedure - Layout procedure
      * @memberOf PDFCreator
@@ -195,7 +392,7 @@ var PDFCreator = function () {
 
         /**
          * Set the document font-size
-         * @param {number} type - Font size
+         * @param {number} size - Font size
          * @memberOf PDFCreator.prototype
          */
 
@@ -209,7 +406,7 @@ var PDFCreator = function () {
 
         /**
          * Set the document text-color
-         * @param {array<number>|string} color - Color as RGB array or hex color
+         * @param {Array<number>|string} color - Color as RGB array or hex color
          * @memberOf PDFCreator.prototype
          */
 
@@ -217,20 +414,17 @@ var PDFCreator = function () {
         key: 'setTextColor',
         value: function setTextColor(color) {
             if (Array.isArray(color)) {
-                var _color = _slicedToArray(color, 3),
-                    r = _color[0],
-                    g = _color[1],
-                    b = _color[2];
+                var _doc;
 
-                this.doc.setTextColor(r, g, b);
+                (_doc = this.doc).setTextColor.apply(_doc, _toConsumableArray(color));
             } else if (PDFCreator.hexToRgb(color)) {
                 var _PDFCreator$hexToRgb = PDFCreator.hexToRgb(color),
                     _PDFCreator$hexToRgb2 = _slicedToArray(_PDFCreator$hexToRgb, 3),
-                    _r = _PDFCreator$hexToRgb2[0],
-                    _g = _PDFCreator$hexToRgb2[1],
-                    _b = _PDFCreator$hexToRgb2[2];
+                    r = _PDFCreator$hexToRgb2[0],
+                    g = _PDFCreator$hexToRgb2[1],
+                    b = _PDFCreator$hexToRgb2[2];
 
-                this.doc.setTextColor(_r, _g, _b);
+                this.doc.setTextColor(r, g, b);
             } else {
                 console.error('Color should be array on RGB, or HEX color');
             }
@@ -246,9 +440,9 @@ var PDFCreator = function () {
          * @param  {number} options.x                - X position
          * @param  {number} options.y                - Y position
          * @param  {string} options.align            - Text alignment
-         * @param  {array|string} options.color      - Text color
+         * @param  {Array|string} options.color      - Text color
          * @param  {number} options.maxAllowedHeight - Max allowed lines-height
-         * @return {number}                          - Inserted text height
+         * @return {number|boolean}                  - Inserted text height
          * @memberOf PDFCreator.prototype
          */
 
@@ -285,7 +479,7 @@ var PDFCreator = function () {
                 x -= this.getTextWidth(text, size);
             }
 
-            // Reqired text adjustments before inserting the text
+            // Required text adjustments before inserting the text
             size && this.setFontSize(size);
             type && this.setFontType(type);
             color && this.setTextColor(color);
@@ -294,7 +488,8 @@ var PDFCreator = function () {
             var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? x / 2 : x));
 
             // Calculate full text-height, so in case of exceeding the given maxAllowedHeight
-            var fullTextHeight = this.doc.internal.getLineHeight() * splittedText.length;
+            var lineHeight = this.doc.internal.getLineHeight();
+            var fullTextHeight = lineHeight * splittedText.length;
 
             // Check if the text height is larger than the max allowed height,
             // then return false, so that we emit that the process didn't complete
@@ -302,7 +497,11 @@ var PDFCreator = function () {
                 return false;
             }
 
-            // Secondly, insert the splitted text into the doc
+            // Secondly, add the "lineHeight" to the "y"
+            // because the text will be added above the given "y" value by one "lineHeight" (WHY!!!)
+            y += lineHeight;
+
+            // Finally, insert the splitted text into the doc
             this.doc.text(splittedText, x, y, align);
 
             // Return the added text height, to be used for further calculation
@@ -311,17 +510,17 @@ var PDFCreator = function () {
 
         /**
          * Insert line into the document with the given (x1, y1, x2, y2) coordinates
-         * @param {number} x1 - Horizonal starting point
-         * @param {number} y1 - Vertical starting point
-         * @param {number} x2 - Horizonal ending point
-         * @param {number} y2 - Vertical ending point
+         * @param {number} x1   - Horizontal starting point
+         * @param {number} y1   - Vertical starting point
+         * @param {number} x2   - Horizontal ending point
+         * @param {number} [y2] - Vertical ending point
          * @memberOf PDFCreator.prototype
          */
 
     }, {
         key: 'insertLine',
         value: function insertLine(x1, y1, x2, y2) {
-            // The default is a stright horizontal line, so if "y2" is missing
+            // The default is a straight horizontal line, so if "y2" is missing
             // set "y2" = "y1"
             if (y2 === undefined) {
                 y2 = y1;
@@ -332,11 +531,11 @@ var PDFCreator = function () {
 
         /**
          * Insert header into the document
-         * @param {string} options.text             - Text to be inserted
-         * @param {number} options.size             - Font size
-         * @param {number} options.type             - Font type
-         * @param {string} options.align            - Text alignment
-         * @param {array|string} options.color      - Text color
+         * @param {string} options.text        - Text to be inserted
+         * @param {number} options.size        - Font size
+         * @param {number} options.type        - Font type
+         * @param {string} options.align       - Text alignment
+         * @param {Array|string} options.color - Text color
          * @memberOf PDFCreator.prototype
          */
 
@@ -381,11 +580,11 @@ var PDFCreator = function () {
         /**
          * The step before inserting the image into the document, it loads the image then converts it to data url,
          * so we can insert the image into the pdf document
-         * @param  {string}  options.url          - Absolute or relative image url
-         * @param  {Function} options.callback    - Converting callback function
-         * @param  {string}  options.outputFormat - Output image format
-         * @param  {_Image}   [options.Image]     - Image Element constructor
-         * @return {Image}                        - Created image instance
+         * @param  {string} options.url          - Absolute or relative image url
+         * @param  {Function} options.callback   - Converting callback function
+         * @param  {string} options.outputFormat - Output image format
+         * @param  {_Image} [options.Image]      - Image Element constructor
+         * @return {Image}                       - Created image instance
          * @memberOf PDFCreator.prototype
          */
 
@@ -486,7 +685,7 @@ var PDFCreator = function () {
                 type = _ref6.type,
                 align = _ref6.align;
 
-            this.setFontSize(size);
+            size && this.setFontSize(size);
             type && this.setFontType(type);
 
             var splittedText = this.doc.splitTextToSize(text, this.width - this.padding - (align === 'center' ? posX / 2 : posX));
@@ -511,6 +710,7 @@ var PDFCreator = function () {
 
         /**
          * Add new page to the current document with the same width/height
+         * FIXME: add the ability to add pages with custom width/height
          * @memberOf PDFCreator.prototype
          */
 
@@ -556,6 +756,20 @@ var PDFCreator = function () {
         value: function add(layout, data) {
             Layouts[layout](this, data);
         }
+
+        /**
+         * Create an PDF atom instance
+         * @param  {string} atom - Atom name
+         * @param  {Object} args - Atom arguments
+         * @return {PDFAtom}     - Created instance
+         * @memberOf PDFCreator.prototype
+         */
+
+    }, {
+        key: 'create',
+        value: function create(atom, args) {
+            return new Atoms[atom](args);
+        }
     }], [{
         key: 'addLayout',
         value: function addLayout(name, procedure) {
@@ -569,9 +783,29 @@ var PDFCreator = function () {
         }
 
         /**
-         * Get layout procedure (default layout, or custom)
-         * @param  {string}   - Layout name
-         * @return {function} - Layout procedure
+         * FIXME: should validate the given "cls"
+         * Add atom to the list of atoms, this method is used also to add custom atoms
+         * @param {string} name  - Atom name, should be unique
+         * @param {function} cls - Atom class
+         * @memberOf PDFCreator
+         */
+
+    }, {
+        key: 'addAtom',
+        value: function addAtom(name, cls) {
+            if (typeof name !== 'string') return console.error('Atom name should be a string');
+
+            if (typeof cls !== 'function') return console.error('Atom class should be a function');
+
+            if (Atoms[name]) return console.error('You can not overwrite atom, this atom "' + name + '" already exists');
+
+            Atoms[name] = cls;
+        }
+
+        /**
+         * Get layout procedure
+         * @param  {string} name - Layout name
+         * @return {function}    - Layout procedure
          * @memberOf PDFCreator
          */
 
@@ -584,7 +818,7 @@ var PDFCreator = function () {
         /**
          * Convert hex color to the equivalent rgb version
          * @param  {string} hex - Hex color
-         * @return {array|null} - Equivalent rgb color
+         * @return {Array|null} - Equivalent rgb color
          * @memberOf PDFCreator
          */
 
@@ -614,7 +848,7 @@ exports.default = PDFCreator;
 
 if (window) window.PDFCreator = PDFCreator;
 
-},{"jspdf":4}],4:[function(require,module,exports){
+},{"jspdf":7}],7:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -1910,9 +2144,6 @@ if (window) window.PDFCreator = PDFCreator;
                           // rightmost point of the text.
                           left = x - maxLineLength;
                           x -= lineWidths[0];
-
-                          console.log('-------')
-                          console.log(left, x, this.width)
                       } else {
                           throw new Error('Unrecognized alignment option, use "center" or "right".');
                       }
@@ -17625,4 +17856,4 @@ Q\n";
 }));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[1])
+},{}]},{},[3])
