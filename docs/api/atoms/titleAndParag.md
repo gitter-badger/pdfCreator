@@ -55,7 +55,6 @@ const listItems = data.titleAndParagList.map(item => {
 let posY = pdfDoc.padding;
 
 listItems.forEach((item) => {
-    const itemHeight = item.height;
     posY += item.insert(posY);
 });
 ```

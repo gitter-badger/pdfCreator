@@ -30,7 +30,7 @@ class MyAtom extends PDFAtom {
     // This method is required
     // It gets the y position of where the atom will be placed
     insert(y) {
-        // it should return the inserted atom height, so we can correctly place
+        // It should return the inserted atom height, so we can correctly place
         // the next elements
     }
 
